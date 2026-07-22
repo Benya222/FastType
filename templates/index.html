@@ -1,12 +1,266 @@
 <!doctype html>
-<html lang="en">
+<html lang="ru">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>FastType</title>
+    <title>Тренажер печати</title>
+    <style>
+      /* Базовые сбросы и стили страницы */
+      * {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+      }
+
+      body {
+        font-family: Arial, sans-serif;
+        background-color: #f4f6f9;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        min-height: 100vh;
+        padding: 20px;
+      }
+
+      .card {
+        background: #ffffff;
+        padding: 30px;
+        border-radius: 12px;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+        max-width: 650px;
+        width: 100%;
+      }
+
+      h2 {
+        margin-bottom: 20px;
+        color: #333;
+        text-align: center;
+      }
+
+      /* ================================================================
+           1. КОНТЕЙНЕР НАЛОЖЕНИЯ СЛОЕВ
+           ================================================================ */
+      .typing-box {
+        position: relative;
+        width: 100%;
+        height: 150px; /* Фиксированная высота (примерно на 3 строки) */
+        border: 2px solid #e0e0e0;
+        border-radius: 8px;
+        background-color: #fafafa;
+        overflow: hidden; /* Прячем текст, который выходит за границы при скролле */
+        padding: 15px;
+      }
+
+      .typing-box:focus-within {
+        border-color: #4a90e2; /* Синяя рамка при клике внутрь */
+      }
+
+      /* ВАЖНО: Моноширинный шрифт и одинаковые размеры для обоих слоев */
+      .text-display,
+      .text-input {
+        font-family: "Courier New", Courier, monospace;
+        font-size: 22px;
+        line-height: 1.6;
+        letter-spacing: 1px;
+        white-space: pre-wrap;
+        word-wrap: break-word;
+        word-break: break-all;
+      }
+
+      /* 2. НИЖНИЙ СЛОЙ (Текст с подсветкой) */
+      .text-display {
+        position: relative;
+        z-index: 1;
+        color: #a0a0a0; /* Цвет неактивных букв (серый) */
+        user-select: none;
+      }
+
+      /* Стили подсвеченных букв */
+      .char-correct {
+        color: #2e7d32; /* Зеленый цвет для правильных символов */
+        background-color: #e8f5e9;
+      }
+
+      .char-incorrect {
+        color: #c62828; /* Красный цвет для ошибок */
+        background-color: #ffebee;
+      }
+
+      .char-current {
+        border-bottom: 3px solid #4a90e2; /* Подчеркивание — курсор */
+        color: #333;
+      }
+
+      /* 3. ВЕРХНИЙ СЛОЙ (Прозрачное поле ввода) */
+      .text-input {
+        position: absolute;
+        top: 15px;
+        left: 15px;
+        width: calc(100% - 30px);
+        height: calc(100% - 30px);
+        z-index: 2;
+        background: transparent; /* Прозрачный фон */
+        color: transparent; /* Прозрачный текст */
+        caret-color: transparent; /* Скрываем стандартный мигающий палочный курсор */
+        border: none;
+        outline: none;
+        resize: none;
+      }
+
+      .info-text {
+        margin-top: 15px;
+        font-size: 14px;
+        color: #777;
+        text-align: center;
+      }
+    </style>
   </head>
   <body>
-    <header></header>
-    <main></main>
+    <div class="card">
+      <h2>Тренажер печати</h2>
+			<p>Time: {{ cpm }} CPM</p>
+      <form method="post">
+        <label>
+          Words count:
+          <input type="number" name="words_count" />
+        </label>
+				<select name="difficulty">
+					<option value="easy">Easy</option>
+					<option value="medium">Medium</option>
+					<option value="hard">Hard</option>
+				</select>
+				<button type="submit">Start</button>
+      </form>
+
+      <form id="typingForm" method="POST">
+        <input type="hidden" id="timeSpentHidden" name="time_spent" />
+
+        <div class="typing-box" id="scrollContainer">
+          <div class="text-display" id="textDisplay">{{ target_text }}</div>
+
+          <textarea
+            class="text-input"
+            id="userInput"
+            name="user_text"
+            autofocus
+          ></textarea>
+        </div>
+      </form>
+
+      <p class="info-text">Начните печатать. Форма отправится автоматически!</p>
+    </div>
+
+    <script>
+      // ================================================================
+      // 1. ДАННЫЕ И МЕТКИ ДЛЯ JINJA2
+      // ================================================================
+
+      // Когда подключишь Flask, замени строку ниже на: {ю{ target_text|tojson }.}
+      const targetText = {{ target_text | tojson }};
+
+      // Сюда подставится длина текста. Для Flask: {ю{ target_text|length }.}
+      const targetLength = targetText.length;
+
+      // ================================================================
+      // 2. НАХОДИМ ЭЛЕМЕНТЫ В ДОКУМЕНТЕ (DOM)
+      // ================================================================
+      const textDisplay = document.getElementById("textDisplay");
+      const userInput = document.getElementById("userInput");
+      const typingForm = document.getElementById("typingForm");
+      const timeSpentHidden = document.getElementById("timeSpentHidden");
+      const userTextHidden = document.getElementById("userTextHidden");
+      const scrollContainer = document.getElementById("scrollContainer");
+
+      let startTime = null; // Будет хранить время первого нажатия
+
+      // ================================================================
+      // 3. ПОДГОТОВКА ТЕКСТА: Разбиваем строку на <span> для каждой буквы
+      // ================================================================
+      function initTextDisplay() {
+        textDisplay.innerHTML = "";
+
+        // Заворачиваем каждый символ в отдельный тег <span>
+        for (let i = 0; i < targetText.length; i++) {
+          const charSpan = document.createElement("span");
+          charSpan.innerText = targetText[i];
+          textDisplay.appendChild(charSpan);
+        }
+
+        // Ставим подсвечивающий курсор на самый первый символ
+        if (textDisplay.children.length > 0) {
+          textDisplay.children[0].classList.add("char-current");
+        }
+      }
+
+      // Запускаем подготовку букв при загрузке страницы
+      initTextDisplay();
+
+      // ================================================================
+      // 4. ОБРАБОТКА ВВОДА (Событие 'input')
+      // ================================================================
+      userInput.addEventListener("input", () => {
+        const typedText = userInput.value;
+        const spans = textDisplay.children;
+
+        // --- А) ФИКСИРУЕМ ВРЕМЯ СТАРТА ---
+        if (!startTime && typedText.length > 0) {
+          startTime = Date.now(); // Фиксируем время в миллисекундах
+        }
+
+        // --- Б) ПОДСВЕТКА БУКВ (Правильно / Ошибка / Курсор) ---
+        for (let i = 0; i < spans.length; i++) {
+          const charSpan = spans[i];
+          const typedChar = typedText[i];
+
+          // Сбрасываем старые подсвечивающие классы
+          charSpan.className = "";
+
+          if (typedChar == null) {
+            // Символ еще не напечатан
+            if (i === typedText.length) {
+              // Это текущая позиция (курсор)
+              charSpan.classList.add("char-current");
+            }
+          } else if (typedChar === targetText[i]) {
+            // Символ совпал — подсвечиваем зеленым
+            charSpan.classList.add("char-correct");
+          } else {
+            // Символ не совпал — подсвечиваем красным
+            charSpan.classList.add("char-incorrect");
+          }
+        }
+
+        // --- В) АВТОМАТИЧЕСКИЙ СКРОЛЛ НА УРОВНЕ ГЛАЗ ---
+        const currentCharSpan = textDisplay.querySelector(".char-current");
+        if (currentCharSpan) {
+          const containerTop = scrollContainer.getBoundingClientRect().top;
+          const charTop = currentCharSpan.getBoundingClientRect().top;
+          const relativeTop = charTop - containerTop;
+
+          // Если текущая буква уходит ниже 60px от верха блока, сдвигаем скролл
+          if (relativeTop > 60) {
+            scrollContainer.scrollTop += relativeTop - 60;
+          } else if (relativeTop < 20) {
+            scrollContainer.scrollTop = 0;
+          }
+        }
+
+        // --- Г) ПРОВЕРКА ОКОНЧАНИЯ И АВТООТПРАВКА ---
+        if (typedText.length >= targetLength) {
+          const endTime = Date.now();
+          // Рассчитываем время в секундах с 2 знаками после запятой
+          const timeSpent = ((endTime - startTime) / 1000).toFixed(2);
+
+          // Записываем данные в скрытые <input>
+          timeSpentHidden.value = timeSpent;
+
+          
+          userInput.readOnly = true;
+
+          // Автоматически отправляем форму во Flask!
+          typingForm.submit();
+        }
+      });
+    </script>
   </body>
 </html>

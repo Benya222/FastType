@@ -10,6 +10,11 @@ class BaseModel(Model):
         database = db
 
 
+
+class User(BaseModel):
+    name = CharField()
+    password = CharField()
+
 class GeneralText(BaseModel):
     title = CharField()
     text = CharField()
@@ -21,6 +26,7 @@ class PersonalText(BaseModel):
     text = CharField()
     characters = IntegerField()
     words = IntegerField()
+    user = ForeignKeyField(User, backref="personal_text")
 
 class PersonalHistory(BaseModel):
     text_title = CharField()
@@ -28,14 +34,14 @@ class PersonalHistory(BaseModel):
     wpm = IntegerField()
     accuracy = IntegerField()
     completed_at = DateTimeField(default= datetime.now)
+    user = ForeignKeyField(User, backref="personal_history")
 
 class Word(BaseModel):
     word = CharField(unique= True)
-    difficulty = CharField()    
+    difficulty = CharField()    # easy, medium, hard
 
 
 def init_db():
     db.connect()
-    db.create_tables([GeneralText, PersonalText, PersonalHistory, Word])
-
+    db.create_tables([User, GeneralText, PersonalText, PersonalHistory, Word])
 
