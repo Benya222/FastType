@@ -3,9 +3,19 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" 
+      href="https://cdnjs.cloudflare.com/ajax/libs/modern-normalize/3.0.1/modern-normalize.min.css" 
+      integrity="sha512-q6WgHqiHlKyOqslT/lgBgodhd03Wp4BEqKeW6nNtlOY4quzyG3VoQKFrieaCeSnuVseNKRGpGeDU3qPmabCANg==" 
+      crossorigin="anonymous" 
+      referrerpolicy="no-referrer" 
+    />
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@100..900&display=swap" rel="stylesheet">
     <title>Тренажер печати</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename= 'css/style.css') }}">
     <style>
-      /* Базовые сбросы и стили страницы */
+      /* Базовые сбросы и стили страницы
       * {
         box-sizing: border-box;
         margin: 0;
@@ -35,7 +45,7 @@
         margin-bottom: 20px;
         color: #333;
         text-align: center;
-      }
+      } */
 
       /* ================================================================
            1. КОНТЕЙНЕР НАЛОЖЕНИЯ СЛОЕВ
@@ -116,40 +126,67 @@
     </style>
   </head>
   <body>
-    <div class="card">
-      <h2>Тренажер печати</h2>
-			<p>Time: {{ cpm }} CPM</p>
-      <form method="post">
-        <label>
-          Words count:
-          <input type="number" name="words_count" />
-        </label>
-				<select name="difficulty">
-					<option value="easy">Easy</option>
-					<option value="medium">Medium</option>
-					<option value="hard">Hard</option>
-				</select>
-				<button type="submit">Start</button>
-      </form>
+    <header class="header">
+      <div class="container container--header">
+        <a href="#" class="logo link">FastType</a>
+        <div class="auth">
+          {% if logged %}
+          <a href="{{ url_for('logout') }}" class="auth__btn link">Log out</a>
+          {% else %}
+          <a href="{{ url_for('login') }}" class="auth__btn link">Log in</a>
+          <a href="{{ url_for('register') }}" class="auth__btn link">Register</a>
+          {% endif %}
+        </div>        
+      </div>
+    </header>
+    <main>
+      <div class="container">
+        <form method="post" class="words">
+          <div class="words__difficult">
+            <input type="radio" name="difficulty" id="easy" value="easy" checked>
+            <label for="easy" class="words__label">easy</label>
+            <input type="radio" name="difficulty"  id="medium" value="medium">
+            <label for="medium" class="words__label">medium</label>
+            <input type="radio" name="difficulty"  id="hard" value="hard">
+            <label for="hard" class="words__label">hard</label>
+          </div>
+          
+          <div class="words__count">
+            <p class="words__text">words</p>
+            <input type="radio" name="words_count" id="count_10" value="10" checked>
+            <label for="count_10" class="words__label">10</label>
+            <input type="radio" name="words_count" id="count_25" value="25">
+            <label for="count_25" class="words__label">25</label>
+            <input type="radio" name="words_count" id="count_50" value="50">
+            <label for="count_50" class="words__label">50</label>          
+          </div>
 
-      <form id="typingForm" method="POST">
-        <input type="hidden" id="timeSpentHidden" name="time_spent" />
+          <button type="submit" class="btn">choose</button>
+        </form>
 
-        <div class="typing-box" id="scrollContainer">
-          <div class="text-display" id="textDisplay">{{ target_text }}</div>
+        <form id="typingForm" method="POST">
+          <input type="hidden" id="timeSpentHidden" name="time_spent" />
 
-          <textarea
-            class="text-input"
-            id="userInput"
-            name="user_text"
-            autofocus
-          ></textarea>
-        </div>
-      </form>
+          <div class="typing-box" id="scrollContainer">
+            <div class="text-display" id="textDisplay">{{ target_text }}</div>
 
-      <p class="info-text">Начните печатать. Форма отправится автоматически!</p>
-    </div>
+            <textarea
+              class="text-input"
+              id="userInput"
+              name="user_text"
+              autofocus
+            ></textarea>
+          </div>
+        </form>
 
+        <p class="info-text">Начните печатать. Форма отправится автоматически!</p>
+        <p>Speed: {{ cpm }} CPM</p>
+        <p>Accuracy: {{ accuracy }}%</p>
+        <p>Time: {{ user_time }}</p>
+        <p>Characters: {{ user_char }}</p>        
+      </div>
+
+    </main>
     <script>
       // ================================================================
       // 1. ДАННЫЕ И МЕТКИ ДЛЯ JINJA2
@@ -254,7 +291,7 @@
           // Записываем данные в скрытые <input>
           timeSpentHidden.value = timeSpent;
 
-          
+
           userInput.readOnly = true;
 
           // Автоматически отправляем форму во Flask!
