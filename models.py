@@ -9,23 +9,20 @@ class BaseModel(Model):
     class Meta:
         database = db
 
-
-
 class User(BaseModel):
     name = CharField()
     password = CharField()
+    
 
 class GeneralText(BaseModel):
     title = CharField()
     text = CharField()
     characters = IntegerField()
-    words = IntegerField()
 
 class PersonalText(BaseModel):
     title = CharField()
     text = CharField()
     characters = IntegerField()
-    words = IntegerField()
     user = ForeignKeyField(User, backref="personal_text")
 
 class PersonalHistory(BaseModel):
@@ -44,4 +41,6 @@ class Word(BaseModel):
 def init_db():
     db.connect()
     db.create_tables([User, GeneralText, PersonalText, PersonalHistory, Word])
+
+
 

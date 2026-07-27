@@ -95,6 +95,11 @@ body {
   letter-spacing: 0%;
 }
 
+.words__input:checked + label {
+  font-weight: 600;
+  color: var(--primary-color);
+}
+
 .words__text {
   font-weight: 600;
   font-size: 20px;
@@ -114,5 +119,10 @@ body {
   display: flex;
   align-items: center;
   gap: 21px;
+}
+
+/* form texts */
+.texts__link {
+  height: 44px;
 }
 

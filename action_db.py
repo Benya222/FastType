@@ -1,4 +1,4 @@
-from models import Word, User
+from models import Word, User, PersonalText
 
 
 '''create'''
@@ -9,11 +9,20 @@ def add_words(words: list, difficult):
 def add_user(name: str, password: str):
     User.create(name= name, password= password)
 
+def add_personal_text(title: str, text: str, user_id: int):
+    characters = len(text)
+    PersonalText.create(title= title, text= text, characters= characters, user= user_id)
+
 
 '''read'''
 def get_user_by_name(name: str) -> User:
-    return User.select().where(User.name == name)
+    return User.get(User.name == name)
 
+def get_personal_texts(user_id: int):
+    return PersonalText.select().where(PersonalText.user == user_id)
+
+def get_personal_text_by_id(text_id: int, user_id: int):
+    return PersonalText.get((PersonalText.id == text_id) & (PersonalText.user == user_id))
 
 # ===================================================
 def user_exists(name: str) -> bool:

@@ -143,27 +143,46 @@
       <div class="container">
         <form method="post" class="words">
           <div class="words__difficult">
-            <input type="radio" name="difficulty" id="easy" value="easy" checked>
+            <input type="radio" name="difficulty" id="easy" value="easy" class="words__input" checked>
             <label for="easy" class="words__label">easy</label>
-            <input type="radio" name="difficulty"  id="medium" value="medium">
+            <input type="radio" name="difficulty"  id="medium" value="medium" class="words__input">
             <label for="medium" class="words__label">medium</label>
-            <input type="radio" name="difficulty"  id="hard" value="hard">
+            <input type="radio" name="difficulty"  id="hard" value="hard" class="words__input">
             <label for="hard" class="words__label">hard</label>
           </div>
           
           <div class="words__count">
             <p class="words__text">words</p>
-            <input type="radio" name="words_count" id="count_10" value="10" checked>
+            <input type="radio" name="words_count" id="count_10" value="10" class="words__input" checked>
             <label for="count_10" class="words__label">10</label>
-            <input type="radio" name="words_count" id="count_25" value="25">
+            <input type="radio" name="words_count" id="count_25" value="25" class="words__input">
             <label for="count_25" class="words__label">25</label>
-            <input type="radio" name="words_count" id="count_50" value="50">
+            <input type="radio" name="words_count" id="count_50" value="50" class="words__input">
             <label for="count_50" class="words__label">50</label>          
           </div>
 
           <button type="submit" class="btn">choose</button>
         </form>
 
+        {% if logged %}
+        <div class="texts">
+          <form method="post" class="texts__form">
+            <select name="text" id="">
+              {% for text in personal_texts %}
+              <option value="{{ text.id }}">
+                {{ text.title }}
+              </option>
+              {% endfor %}
+            </select>
+            <button type="submit" class="btn texts__btn">choose</button>
+          </form>
+          <a href="{{ url_for('add_text') }}" class="texts_link link">add</a>
+          {% if text_id %}
+          <a href="{{ url_for('edit', id= text_id) }}" class="texts_link link">edit</a>
+          <a href="{{ url_for('delete', id= text_id) }}" class="texts_link link">delete</a>
+          {% endif %}   
+        </div>
+        {% endif %}
         <form id="typingForm" method="POST">
           <input type="hidden" id="timeSpentHidden" name="time_spent" />
 
