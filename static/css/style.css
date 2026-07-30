@@ -46,6 +46,11 @@ body {
 
 }
 
+.btn:hover,
+.btn:focus {
+  background-color: var(--accent-color);
+}
+
 .list {
   padding: 0;
   margin: 0;
@@ -88,6 +93,10 @@ body {
   font-weight: 700;
   font-size: 24px;
 }
+.auth__btn:hover,
+.auth_btn:focus {
+  border-bottom: 2px solid var(--white-color);
+}
 /* form words */
 
 .words {
@@ -97,15 +106,39 @@ body {
 }
 
 .words__label {
+  display: block;
+  padding-left: 32px;
   font-weight: 400;
   font-size: 16px;
-  line-height: 1.25em;
+  line-height: 1.8;
   letter-spacing: 0%;
+
+  background-image: url("../image/base-radio.svg");
+  background-repeat: no-repeat;
+  background-position: left;
+}
+
+.words__input {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  border: 0;
+  padding: 0;
+
+  white-space: nowrap;
+  clip-path: inset(100%);
+  clip: rect(0 0 0 0);
+  overflow: hidden;
 }
 
 .words__input:checked + label {
   font-weight: 600;
   color: var(--primary-color);
+
+  background-image: url("../image/accent-radio.svg");
+  background-repeat: no-repeat;
+  background-position: left;
 }
 
 .words__text {
@@ -145,9 +178,11 @@ body {
   -webkit-appearance: none;
   -moz-appearance: none;
 
+  display: flex;
+  align-items: center;
   height: 44px;
-  padding-top: 12px;
-  padding-bottom: 12px;
+  /* padding-top: 12px;
+  padding-bottom: 12px; */
   padding-right: 46px;
   padding-left: 9px;
 
@@ -191,6 +226,8 @@ body {
 }
 
 .texts__text {
+  margin-right: 12px;
+
   font-weight: 600;
   font-size: 20px;
   line-height: 1.5em;
@@ -281,7 +318,13 @@ body {
   gap: 20px;
 }
 
+.state__item {
+  display: flex;
+}
 
+.state--text-container {
+  margin-left: 8px;
+}
 
 .state__accent {
   display: block;
@@ -298,7 +341,7 @@ body {
 .state__text {
   font-weight: 400;
   font-size: 20px;
-  line-height: 100%;
+  line-height: 0%;
   letter-spacing: 0%;
 }
 

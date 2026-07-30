@@ -24,6 +24,13 @@ def get_personal_texts(user_id: int):
 def get_personal_text_by_id(text_id: int, user_id: int):
     return PersonalText.get((PersonalText.id == text_id) & (PersonalText.user == user_id))
 
+'''update'''
+def edit_personal_text(title: str, text: str, text_id: int, user_id: int):
+    PersonalText.update(title= title, text= text).where((PersonalText.id == text_id)&(PersonalText.user == user_id)).execute()
+
+'''delete'''
+def delete_personal_text(text_id: int, user_id: int):
+    PersonalText.delete().where((PersonalText.id == text_id)&(PersonalText.user == user_id)).execute()    
 # ===================================================
 def user_exists(name: str) -> bool:
     return User.select().where(User.name == name).exists()

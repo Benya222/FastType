@@ -12,19 +12,28 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@100..900&display=swap" rel="stylesheet">
-    <title>Тренажер печати</title>
     <link rel="stylesheet" href="{{ url_for('static', filename= 'css/style.css') }}">
+    <title>Тренажер печати</title>
   </head>
   <body>
     <header class="header">
       <div class="container container--header">
-        <a href="#" class="logo link">FastType</a>
+        <a href="{{ url_for('text.index') }}" class="logo link">FastType</a>
         <div class="auth">
           {% if logged %}
-          <a href="{{ url_for('logout') }}" class="auth__btn link">Log out</a>
+          <a href="#" class=" link">
+            <svg width="48px" height="48px">
+              <use href="{{ url_for('static', filename='image/sprite.svg') }}#icon-profile"></use>
+            </svg>
+          </a>
+          <a href="{{ url_for('auth.logout') }}" class="auth_btn link">
+            <svg width="48px" height="48px">
+              <use href="{{ url_for('static', filename='image/sprite.svg') }}#icon-exit"></use>
+            </svg>
+          </a>
           {% else %}
-          <a href="{{ url_for('login') }}" class="auth__btn link">Log in</a>
-          <a href="{{ url_for('register') }}" class="auth__btn link">Register</a>
+          <a href="{{ url_for('auth.login') }}" class="auth__btn link">Log in</a>
+          <a href="{{ url_for('auth.register') }}" class="auth__btn link">Register</a>
           {% endif %}
         </div>        
       </div>
@@ -66,10 +75,25 @@
                 </option>
                 {% endfor %}
               </select>            
-              <a href="{{ url_for('add_text') }}" class="texts__link link"><span class="texts__text">add</span></a>
+              <a href="{{ url_for('text.add_text') }}" class="texts__link link">
+                <span class="texts__text">add</span>
+                <svg width="28px" height="28px">
+                  <use href="{{ url_for('static', filename='image/sprite.svg') }}#icon-add"></use>
+                </svg>
+              </a>
               {% if text_id %}
-              <a href="{{ url_for('edit', id= text_id) }}" class="texts__link link"><span class="texts__text">edit</span></a>
-              <a href="{{ url_for('delete', id= text_id) }}" class="texts__link link"><span class="texts__text">delete</span></a>
+              <a href="{{ url_for('text.edit', id= text_id) }}" class="texts__link link">
+                <span class="texts__text">edit</span>
+                <svg width="28px" height="28px">
+                  <use href="{{ url_for('static', filename='image/sprite.svg') }}#icon-edit"></use>
+                </svg>
+              </a>
+              <a href="{{ url_for('text.delete', id= text_id) }}" class="texts__link link">
+                <span class="texts__text">delete</span>
+                <svg width="28px" height="28px">
+                  <use href="{{ url_for('static', filename='image/sprite.svg') }}#icon-delete"></use>
+                </svg>
+              </a>
               {% endif %} 
 
               <button type="submit" class="btn texts__btn">choose</button>
@@ -93,25 +117,37 @@
         </form>
         <lu class="state list">
           <li class="state__item">
+            <svg width="48px" height="48px">
+              <use href="{{ url_for('static', filename='image/sprite.svg') }}#icon-clock"></use>
+            </svg>
             <div class="state--text-container">
               <span class="state__accent">time</span>
               <p class="state__text">{{ user_time }}</p>
             </div>
           </li>
           <li class="state__item">
-            <div class="state-text-container">
+            <svg width="56px" height="56px">
+              <use href="{{ url_for('static', filename='image/sprite.svg') }}#icon-keyboard"></use>
+            </svg>
+            <div class="state--text-container">
               <span class="state__accent">symbols</span>
               <p class="state__text">{{ user_char }}</p>
             </div>
           </li>
           <li class="state__item">
-            <div class="state-text-container">
+            <svg width="48px" height="48px">
+              <use href="{{ url_for('static', filename='image/sprite.svg') }}#icon-speedometer"></use>
+            </svg>
+            <div class="state--text-container">
               <span class="state__accent">speed</span>
               <p class="state__text">{{ cpm }} cpm</p>
             </div>
           </li>
           <li class="state__item">
-            <div class="state-text-container">
+            <svg width="48px" height="48px">
+              <use href="{{ url_for('static', filename='image/sprite.svg') }}#icon-target"></use>
+            </svg>
+            <div class="state--text-container">
               <span class="state__accent">accuracy</span>
               <p class="state__text">{{ accuracy }}%</p>
             </div>
