@@ -1,4 +1,4 @@
-from models import Word, User, PersonalText
+from models import Word, User, PersonalText, PersonalHistory
 
 
 '''create'''
@@ -13,6 +13,9 @@ def add_personal_text(title: str, text: str, user_id: int):
     characters = len(text)
     PersonalText.create(title= title, text= text, characters= characters, user= user_id)
 
+def add_personal_history(user_id: int, text_title: str, cpm: int, accuracy: int):
+    wpm = round(cpm / 5)
+    PersonalHistory.create(text_title= text_title, cpm= cpm, wpm= wpm, accuracy= accuracy, user= user_id)
 
 '''read'''
 def get_user_by_name(name: str) -> User:

@@ -40,7 +40,7 @@
     </header>
     <main>
       <div class="container">
-        <form method="post" class="words">
+        <form method="post" class="words" action="{{ url_for('text.start_test') }}">
           <div class="words__difficult">
             <input type="radio" name="difficulty" id="easy" value="easy" class="words__input" checked>
             <label for="easy" class="words__label">easy</label>
@@ -65,7 +65,7 @@
 
         {% if logged %}
         <div class="texts">
-          <form method="post" class="texts__form">
+          <form method="post" class="texts__form" action="{{ url_for('text.start_test') }}">
             <label for="text" class="texts__label">my texts</label>
             <div class="container-buttons">
               <select name="text" id="text" class="texts__select">
@@ -101,7 +101,7 @@
           </form>
         </div>
         {% endif %}
-        <form id="typingForm" method="POST" class="typing-form">
+        <form id="typingForm" method="post" class="typing-form" action="{{ url_for('text.save_result') }}">
           <input type="hidden" id="timeSpentHidden" name="time_spent" />
 
           <div class="typing-box" id="scrollContainer">

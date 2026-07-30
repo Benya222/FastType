@@ -14,4 +14,10 @@ app.register_blueprint(auth_bp)
 
 
 
+
+
+
+
+
+
 app.run(debug=True)
