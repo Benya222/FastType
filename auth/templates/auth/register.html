@@ -1,53 +1,28 @@
-<!doctype html>
-<html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <link rel="stylesheet" 
-      href="https://cdnjs.cloudflare.com/ajax/libs/modern-normalize/3.0.1/modern-normalize.min.css" 
-      integrity="sha512-q6WgHqiHlKyOqslT/lgBgodhd03Wp4BEqKeW6nNtlOY4quzyG3VoQKFrieaCeSnuVseNKRGpGeDU3qPmabCANg==" 
-      crossorigin="anonymous" 
-      referrerpolicy="no-referrer" 
-    />
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@100..900&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="{{ url_for('static', filename= 'css/style.css') }}">
-    <link rel="stylesheet" href="{{ url_for('static', filename= 'css/auth.css') }}">
-    <title>Register</title>
-  </head>
-  <body>
-    <header class="header">
-      <div class="container container--header">
-        <a href="{{ url_for('text.index') }}" class="logo link">FastType</a>
-        <div class="auth">
-          {% if logged %}
-          <a href="{{ url_for('auth.logout') }}" class="auth__btn link">Log out</a>
-          {% else %}
-          <a href="{{ url_for('auth.login') }}" class="auth__btn link">Log in</a>
-          <a href="{{ url_for('auth.register') }}" class="auth__btn link">Register</a>
-          {% endif %}
-        </div>        
-      </div>
-    </header>
-    <main>
-      <div class="container">
-        <h1 class="title">Register</h1>
-        <form class="auth-form" method="post">
-          <label class="auth-form__label">
-            <span class="auth-form__text">Name</span>
-            <input type="text" name="name" class="auth-form__input" placeholder="Name...">
-          </label>
+{% extends "base.html" %}
 
-          <label class="auth-form__label">
-            <span class="auth-form__text">Password</span>
-            <input type="password" name="password" class="auth-form__input" placeholder="Password...">
-          </label>
-          
 
-          <button type="submit" class="btn">Register</button>
-        </form>
-      </div>
-    </main>
-  </body>
-</html>
+{% block style %}
+<link rel="stylesheet" href="{{ url_for('static', filename= 'css/auth.css') }}">
+{% endblock %}
+
+{% block page_title %}
+Register
+{% endblock %}
+
+{% block main_content %}
+<h1 class="title">Register</h1>
+<form class="auth-form" method="post">
+  <label class="auth-form__label">
+    <span class="auth-form__text">Name</span>
+    <input type="text" name="name" class="auth-form__input" placeholder="Name...">
+  </label>
+
+  <label class="auth-form__label">
+    <span class="auth-form__text">Password</span>
+    <input type="password" name="password" class="auth-form__input" placeholder="Password...">
+  </label>
+  
+
+  <button type="submit" class="btn">Register</button>
+</form>
+{% endblock %}

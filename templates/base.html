@@ -15,14 +15,14 @@
   <link rel="stylesheet" href="{{ url_for('static', filename= 'css/style.css') }}">
   {% block style %}
   {% endblock %}
-  <title>{% block page-title %}{% endblock %}</title>
+  <title>{% block page_title %}{% endblock %}</title>
 </head>
 <body>
   <header class="header">
     <div class="container container--header">
       <a href="{{ url_for('text.index') }}" class="logo link">FastType</a>
       <div class="auth">
-        {% if logged %}
+        {% if session['user'] %}
         <a href="#" class=" link">
           <svg width="48px" height="48px">
             <use href="{{ url_for('static', filename='image/sprite.svg') }}#icon-profile"></use>
@@ -42,9 +42,11 @@
   </header>
   <main>
     <div class="container">
-      {% block main-content %}
+      {% block main_content %}
       {% endblock %}
     </div>
   </main>
+  {% block script %}
+  {% endblock %}
 </body>
 </html>

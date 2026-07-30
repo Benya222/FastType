@@ -190,7 +190,7 @@ def add_text():
             #flash
             return redirect(url_for('text.add_text'))
 
-    return render_template('text/add_text.html', logged= is_logged())
+    return render_template('text/add_text.html')
 
 
 
@@ -206,7 +206,7 @@ def edit(id):
 
         edit_personal_text(new_title, new_text, id, user_id)
         #flash
-        return redirect(url_for('text.index'), logged= is_logged())
+        return redirect(url_for('text.index'))
 
 
     return render_template('text/edit.html', 
@@ -219,7 +219,7 @@ def delete(id):
     user_id = session.get('user')
     delete_personal_text(id, user_id)
     #flash
-
+    session.pop('current_test')
     return redirect(url_for('text.index'))
 
 

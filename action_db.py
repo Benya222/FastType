@@ -25,7 +25,7 @@ def get_personal_texts(user_id: int):
     return PersonalText.select().where(PersonalText.user == user_id)
 
 def get_personal_text_by_id(text_id: int, user_id: int):
-    return PersonalText.get((PersonalText.id == text_id) & (PersonalText.user == user_id))
+    return PersonalText.get_or_none((PersonalText.id == text_id) & (PersonalText.user == user_id))
 
 '''update'''
 def edit_personal_text(title: str, text: str, text_id: int, user_id: int):

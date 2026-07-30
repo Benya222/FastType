@@ -1,50 +1,23 @@
-<!doctype html>
-<html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <link rel="stylesheet" 
-      href="https://cdnjs.cloudflare.com/ajax/libs/modern-normalize/3.0.1/modern-normalize.min.css" 
-      integrity="sha512-q6WgHqiHlKyOqslT/lgBgodhd03Wp4BEqKeW6nNtlOY4quzyG3VoQKFrieaCeSnuVseNKRGpGeDU3qPmabCANg==" 
-      crossorigin="anonymous" 
-      referrerpolicy="no-referrer" 
-    />
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@100..900&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="{{ url_for('static', filename= 'css/style.css') }}">
-    <link rel="stylesheet" href="{{ url_for('static', filename= 'css/manage-text.css') }}">
-    <title>Add</title>
-  </head>
-  <body>
-    <header class="header">
-      <div class="container container--header">
-        <a href="{{ url_for('text.index') }}" class="logo link">FastType</a>
-        <div class="auth">
-          {% if logged %}
-          <a href="{{ url_for('auth.logout') }}" class="auth__btn link">Log out</a>
-          {% else %}
-          <a href="{{ url_for('auth.login') }}" class="auth__btn link">Log in</a>
-          <a href="{{ url_for('auth.register') }}" class="auth__btn link">Register</a>
-          {% endif %}
-        </div>        
-      </div>
-    </header>
-    <main>
-      <div class="container">
-        <h1 class="title">Add</h1>
-        <form method="post" class="manage-form">
-          <label>
-            <span class="manage-form__text">Title</span>
-            <input type="text" name="title" class="manage-form__input" placeholder="Title...">
-          </label>
-          <label>
-            <span class="manage-form__text">Text</span>
-            <textarea name="text" class="manage-form__textarea" placeholder="Text..."></textarea>
-          </label>
-          <button type="submit" class="btn">Add</button>
-        </form>      
-      </div>
-    </main>
-  </body>
-</html>
+{% extends "base.html" %}
+
+
+{% block style %}
+<link rel="stylesheet" href="{{ url_for('static', filename= 'css/manage_text.css') }}">
+{% endblock %}
+
+{% block page_title %}Add{% endblock %}
+
+{% block main_content %}
+<h1 class="title">Add</h1>
+<form method="post" class="manage-form">
+  <label>
+    <span class="manage-form__text">Title</span>
+    <input type="text" name="title" class="manage-form__input" placeholder="Title...">
+  </label>
+  <label>
+    <span class="manage-form__text">Text</span>
+    <textarea name="text" class="manage-form__textarea" placeholder="Text..."></textarea>
+  </label>
+  <button type="submit" class="btn">Add</button>
+</form>     
+{% endblock %}

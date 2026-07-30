@@ -1,273 +1,241 @@
-<!doctype html>
-<html lang="ru">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <link rel="stylesheet" 
-      href="https://cdnjs.cloudflare.com/ajax/libs/modern-normalize/3.0.1/modern-normalize.min.css" 
-      integrity="sha512-q6WgHqiHlKyOqslT/lgBgodhd03Wp4BEqKeW6nNtlOY4quzyG3VoQKFrieaCeSnuVseNKRGpGeDU3qPmabCANg==" 
-      crossorigin="anonymous" 
-      referrerpolicy="no-referrer" 
-    />
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@100..900&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="{{ url_for('static', filename= 'css/style.css') }}">
-    <link rel="stylesheet" href="{{ url_for('static', filename= 'css/main.css') }}">
-    <title>Тренажер печати</title>
-  </head>
-  <body>
-    <header class="header">
-      <div class="container container--header">
-        <a href="{{ url_for('text.index') }}" class="logo link">FastType</a>
-        <div class="auth">
-          {% if logged %}
-          <a href="#" class=" link">
-            <svg width="48px" height="48px">
-              <use href="{{ url_for('static', filename='image/sprite.svg') }}#icon-profile"></use>
-            </svg>
-          </a>
-          <a href="{{ url_for('auth.logout') }}" class="auth_btn link">
-            <svg width="48px" height="48px">
-              <use href="{{ url_for('static', filename='image/sprite.svg') }}#icon-exit"></use>
-            </svg>
-          </a>
-          {% else %}
-          <a href="{{ url_for('auth.login') }}" class="auth__btn link">Log in</a>
-          <a href="{{ url_for('auth.register') }}" class="auth__btn link">Register</a>
-          {% endif %}
-        </div>        
-      </div>
-    </header>
-    <main>
-      <div class="container">
-        <form method="post" class="words" action="{{ url_for('text.start_test') }}">
-          <div class="words__difficult">
-            <input type="radio" name="difficulty" id="easy" value="easy" class="words__input" checked>
-            <label for="easy" class="words__label">easy</label>
-            <input type="radio" name="difficulty"  id="medium" value="medium" class="words__input">
-            <label for="medium" class="words__label">medium</label>
-            <input type="radio" name="difficulty"  id="hard" value="hard" class="words__input">
-            <label for="hard" class="words__label">hard</label>
-          </div>
-          
-          <div class="words__count">
-            <p class="words__text">words</p>
-            <input type="radio" name="words_count" id="count_10" value="10" class="words__input" checked>
-            <label for="count_10" class="words__label">10</label>
-            <input type="radio" name="words_count" id="count_25" value="25" class="words__input">
-            <label for="count_25" class="words__label">25</label>
-            <input type="radio" name="words_count" id="count_50" value="50" class="words__input">
-            <label for="count_50" class="words__label">50</label>          
-          </div>
+{% extends "base.html" %}
 
-          <button type="submit" class="btn">choose</button>
-        </form>
 
-        {% if logged %}
-        <div class="texts">
-          <form method="post" class="texts__form" action="{{ url_for('text.start_test') }}">
-            <label for="text" class="texts__label">my texts</label>
-            <div class="container-buttons">
-              <select name="text" id="text" class="texts__select">
-                {% for text in personal_texts %}
-                <option value="{{ text.id }}">
-                  {{ text.title }}
-                </option>
-                {% endfor %}
-              </select>            
-              <a href="{{ url_for('text.add_text') }}" class="texts__link link">
-                <span class="texts__text">add</span>
-                <svg width="28px" height="28px">
-                  <use href="{{ url_for('static', filename='image/sprite.svg') }}#icon-add"></use>
-                </svg>
-              </a>
-              {% if text_id %}
-              <a href="{{ url_for('text.edit', id= text_id) }}" class="texts__link link">
-                <span class="texts__text">edit</span>
-                <svg width="28px" height="28px">
-                  <use href="{{ url_for('static', filename='image/sprite.svg') }}#icon-edit"></use>
-                </svg>
-              </a>
-              <a href="{{ url_for('text.delete', id= text_id) }}" class="texts__link link">
-                <span class="texts__text">delete</span>
-                <svg width="28px" height="28px">
-                  <use href="{{ url_for('static', filename='image/sprite.svg') }}#icon-delete"></use>
-                </svg>
-              </a>
-              {% endif %} 
+{% block style %}
+<link rel="stylesheet" href="{{ url_for('static', filename= 'css/main.css') }}">
+{% endblock %}
 
-              <button type="submit" class="btn texts__btn">choose</button>
-            </div>
-          </form>
-        </div>
-        {% endif %}
-        <form id="typingForm" method="post" class="typing-form" action="{{ url_for('text.save_result') }}">
-          <input type="hidden" id="timeSpentHidden" name="time_spent" />
+{% block page_title %}FastType{% endblock %}
 
-          <div class="typing-box" id="scrollContainer">
-            <div class="text-display" id="textDisplay">{{ target_text }}</div>
+{% block main_content %}
+<form method="post" class="words" action="{{ url_for('text.start_test') }}">
+  <div class="words__difficult">
+    <input type="radio" name="difficulty" id="easy" value="easy" class="words__input" checked>
+    <label for="easy" class="words__label">easy</label>
+    <input type="radio" name="difficulty"  id="medium" value="medium" class="words__input">
+    <label for="medium" class="words__label">medium</label>
+    <input type="radio" name="difficulty"  id="hard" value="hard" class="words__input">
+    <label for="hard" class="words__label">hard</label>
+  </div>
+  
+  <div class="words__count">
+    <p class="words__text">words</p>
+    <input type="radio" name="words_count" id="count_10" value="10" class="words__input" checked>
+    <label for="count_10" class="words__label">10</label>
+    <input type="radio" name="words_count" id="count_25" value="25" class="words__input">
+    <label for="count_25" class="words__label">25</label>
+    <input type="radio" name="words_count" id="count_50" value="50" class="words__input">
+    <label for="count_50" class="words__label">50</label>          
+  </div>
 
-            <textarea
-              class="text-input"
-              id="userInput"
-              name="user_text"
-              autofocus
-            ></textarea>
-          </div>
-        </form>
-        <lu class="state list">
-          <li class="state__item">
-            <svg width="48px" height="48px">
-              <use href="{{ url_for('static', filename='image/sprite.svg') }}#icon-clock"></use>
-            </svg>
-            <div class="state--text-container">
-              <span class="state__accent">time</span>
-              <p class="state__text">{{ user_time }}</p>
-            </div>
-          </li>
-          <li class="state__item">
-            <svg width="56px" height="56px">
-              <use href="{{ url_for('static', filename='image/sprite.svg') }}#icon-keyboard"></use>
-            </svg>
-            <div class="state--text-container">
-              <span class="state__accent">symbols</span>
-              <p class="state__text">{{ user_char }}</p>
-            </div>
-          </li>
-          <li class="state__item">
-            <svg width="48px" height="48px">
-              <use href="{{ url_for('static', filename='image/sprite.svg') }}#icon-speedometer"></use>
-            </svg>
-            <div class="state--text-container">
-              <span class="state__accent">speed</span>
-              <p class="state__text">{{ cpm }} cpm</p>
-            </div>
-          </li>
-          <li class="state__item">
-            <svg width="48px" height="48px">
-              <use href="{{ url_for('static', filename='image/sprite.svg') }}#icon-target"></use>
-            </svg>
-            <div class="state--text-container">
-              <span class="state__accent">accuracy</span>
-              <p class="state__text">{{ accuracy }}%</p>
-            </div>
-          </li>
-        </lu>    
-      </div>
+  <button type="submit" class="btn">choose</button>
+</form>
 
-    </main>
-    <script>
-      // ================================================================
-      // 1. ДАННЫЕ И МЕТКИ ДЛЯ JINJA2
-      // ================================================================
+{% if logged %}
+<div class="texts">
+  <form method="post" class="texts__form" action="{{ url_for('text.start_test') }}">
+    <label for="text" class="texts__label">my texts</label>
+    <div class="container-buttons">
+      <select name="text" id="text" class="texts__select">
+        {% for text in personal_texts %}
+        <option value="{{ text.id }}">
+          {{ text.title }}
+        </option>
+        {% endfor %}
+      </select>            
+      <a href="{{ url_for('text.add_text') }}" class="texts__link link">
+        <span class="texts__text">add</span>
+        <svg width="28px" height="28px">
+          <use href="{{ url_for('static', filename='image/sprite.svg') }}#icon-add"></use>
+        </svg>
+      </a>
+      {% if text_id %}
+      <a href="{{ url_for('text.edit', id= text_id) }}" class="texts__link link">
+        <span class="texts__text">edit</span>
+        <svg width="28px" height="28px">
+          <use href="{{ url_for('static', filename='image/sprite.svg') }}#icon-edit"></use>
+        </svg>
+      </a>
+      <a href="{{ url_for('text.delete', id= text_id) }}" class="texts__link link">
+        <span class="texts__text">delete</span>
+        <svg width="28px" height="28px">
+          <use href="{{ url_for('static', filename='image/sprite.svg') }}#icon-delete"></use>
+        </svg>
+      </a>
+      {% endif %} 
 
-      // Когда подключишь Flask, замени строку ниже на: {ю{ target_text|tojson }.}
-      const targetText = {{ target_text | tojson }};
+      <button type="submit" class="btn texts__btn">choose</button>
+    </div>
+  </form>
+</div>
+{% endif %}
+<form id="typingForm" method="post" class="typing-form" action="{{ url_for('text.save_result') }}">
+  <input type="hidden" id="timeSpentHidden" name="time_spent" />
 
-      // Сюда подставится длина текста. Для Flask: {ю{ target_text|length }.}
-      const targetLength = targetText.length;
+  <div class="typing-box" id="scrollContainer">
+    <div class="text-display" id="textDisplay">{{ target_text }}</div>
 
-      // ================================================================
-      // 2. НАХОДИМ ЭЛЕМЕНТЫ В ДОКУМЕНТЕ (DOM)
-      // ================================================================
-      const textDisplay = document.getElementById("textDisplay");
-      const userInput = document.getElementById("userInput");
-      const typingForm = document.getElementById("typingForm");
-      const timeSpentHidden = document.getElementById("timeSpentHidden");
-      const userTextHidden = document.getElementById("userTextHidden");
-      const scrollContainer = document.getElementById("scrollContainer");
+    <textarea
+      class="text-input"
+      id="userInput"
+      name="user_text"
+      autofocus
+    ></textarea>
+  </div>
+</form>
+<lu class="state list">
+  <li class="state__item">
+    <svg width="48px" height="48px">
+      <use href="{{ url_for('static', filename='image/sprite.svg') }}#icon-clock"></use>
+    </svg>
+    <div class="state--text-container">
+      <span class="state__accent">time</span>
+      <p class="state__text">{{ user_time }}</p>
+    </div>
+  </li>
+  <li class="state__item">
+    <svg width="56px" height="56px">
+      <use href="{{ url_for('static', filename='image/sprite.svg') }}#icon-keyboard"></use>
+    </svg>
+    <div class="state--text-container">
+      <span class="state__accent">symbols</span>
+      <p class="state__text">{{ user_char }}</p>
+    </div>
+  </li>
+  <li class="state__item">
+    <svg width="48px" height="48px">
+      <use href="{{ url_for('static', filename='image/sprite.svg') }}#icon-speedometer"></use>
+    </svg>
+    <div class="state--text-container">
+      <span class="state__accent">speed</span>
+      <p class="state__text">{{ cpm }} cpm</p>
+    </div>
+  </li>
+  <li class="state__item">
+    <svg width="48px" height="48px">
+      <use href="{{ url_for('static', filename='image/sprite.svg') }}#icon-target"></use>
+    </svg>
+    <div class="state--text-container">
+      <span class="state__accent">accuracy</span>
+      <p class="state__text">{{ accuracy }}%</p>
+    </div>
+  </li>
+</lu> 
+{% endblock %}
 
-      let startTime = null; // Будет хранить время первого нажатия
+{% block script %}
+<script>
+  // ================================================================
+  // 1. ДАННЫЕ И МЕТКИ ДЛЯ JINJA2
+  // ================================================================
 
-      // ================================================================
-      // 3. ПОДГОТОВКА ТЕКСТА: Разбиваем строку на <span> для каждой буквы
-      // ================================================================
-      function initTextDisplay() {
-        textDisplay.innerHTML = "";
+  // Когда подключишь Flask, замени строку ниже на: {ю{ target_text|tojson }.}
+  const targetText = {{ target_text | tojson }};
 
-        // Заворачиваем каждый символ в отдельный тег <span>
-        for (let i = 0; i < targetText.length; i++) {
-          const charSpan = document.createElement("span");
-          charSpan.innerText = targetText[i];
-          textDisplay.appendChild(charSpan);
+  // Сюда подставится длина текста. Для Flask: {ю{ target_text|length }.}
+  const targetLength = targetText.length;
+
+  // ================================================================
+  // 2. НАХОДИМ ЭЛЕМЕНТЫ В ДОКУМЕНТЕ (DOM)
+  // ================================================================
+  const textDisplay = document.getElementById("textDisplay");
+  const userInput = document.getElementById("userInput");
+  const typingForm = document.getElementById("typingForm");
+  const timeSpentHidden = document.getElementById("timeSpentHidden");
+  const userTextHidden = document.getElementById("userTextHidden");
+  const scrollContainer = document.getElementById("scrollContainer");
+
+  let startTime = null; // Будет хранить время первого нажатия
+
+  // ================================================================
+  // 3. ПОДГОТОВКА ТЕКСТА: Разбиваем строку на <span> для каждой буквы
+  // ================================================================
+  function initTextDisplay() {
+    textDisplay.innerHTML = "";
+
+    // Заворачиваем каждый символ в отдельный тег <span>
+    for (let i = 0; i < targetText.length; i++) {
+      const charSpan = document.createElement("span");
+      charSpan.innerText = targetText[i];
+      textDisplay.appendChild(charSpan);
+    }
+
+    // Ставим подсвечивающий курсор на самый первый символ
+    if (textDisplay.children.length > 0) {
+      textDisplay.children[0].classList.add("char-current");
+    }
+  }
+
+  // Запускаем подготовку букв при загрузке страницы
+  initTextDisplay();
+
+  // ================================================================
+  // 4. ОБРАБОТКА ВВОДА (Событие 'input')
+  // ================================================================
+  userInput.addEventListener("input", () => {
+    const typedText = userInput.value;
+    const spans = textDisplay.children;
+
+    // --- А) ФИКСИРУЕМ ВРЕМЯ СТАРТА ---
+    if (!startTime && typedText.length > 0) {
+      startTime = Date.now(); // Фиксируем время в миллисекундах
+    }
+
+    // --- Б) ПОДСВЕТКА БУКВ (Правильно / Ошибка / Курсор) ---
+    for (let i = 0; i < spans.length; i++) {
+      const charSpan = spans[i];
+      const typedChar = typedText[i];
+
+      // Сбрасываем старые подсвечивающие классы
+      charSpan.className = "";
+
+      if (typedChar == null) {
+        // Символ еще не напечатан
+        if (i === typedText.length) {
+          // Это текущая позиция (курсор)
+          charSpan.classList.add("char-current");
         }
-
-        // Ставим подсвечивающий курсор на самый первый символ
-        if (textDisplay.children.length > 0) {
-          textDisplay.children[0].classList.add("char-current");
-        }
+      } else if (typedChar === targetText[i]) {
+        // Символ совпал — подсвечиваем зеленым
+        charSpan.classList.add("char-correct");
+      } else {
+        // Символ не совпал — подсвечиваем красным
+        charSpan.classList.add("char-incorrect");
       }
+    }
 
-      // Запускаем подготовку букв при загрузке страницы
-      initTextDisplay();
+    // --- В) АВТОМАТИЧЕСКИЙ СКРОЛЛ НА УРОВНЕ ГЛАЗ ---
+    const currentCharSpan = textDisplay.querySelector(".char-current");
+    if (currentCharSpan) {
+      const containerTop = scrollContainer.getBoundingClientRect().top;
+      const charTop = currentCharSpan.getBoundingClientRect().top;
+      const relativeTop = charTop - containerTop;
 
-      // ================================================================
-      // 4. ОБРАБОТКА ВВОДА (Событие 'input')
-      // ================================================================
-      userInput.addEventListener("input", () => {
-        const typedText = userInput.value;
-        const spans = textDisplay.children;
+      // Если текущая буква уходит ниже 60px от верха блока, сдвигаем скролл
+      if (relativeTop > 60) {
+        scrollContainer.scrollTop += relativeTop - 60;
+      } else if (relativeTop < 20) {
+        scrollContainer.scrollTop = 0;
+      }
+    }
 
-        // --- А) ФИКСИРУЕМ ВРЕМЯ СТАРТА ---
-        if (!startTime && typedText.length > 0) {
-          startTime = Date.now(); // Фиксируем время в миллисекундах
-        }
+    // --- Г) ПРОВЕРКА ОКОНЧАНИЯ И АВТООТПРАВКА ---
+    if (typedText.length >= targetLength) {
+      const endTime = Date.now();
+      // Рассчитываем время в секундах с 2 знаками после запятой
+      const timeSpent = ((endTime - startTime) / 1000).toFixed(2);
 
-        // --- Б) ПОДСВЕТКА БУКВ (Правильно / Ошибка / Курсор) ---
-        for (let i = 0; i < spans.length; i++) {
-          const charSpan = spans[i];
-          const typedChar = typedText[i];
-
-          // Сбрасываем старые подсвечивающие классы
-          charSpan.className = "";
-
-          if (typedChar == null) {
-            // Символ еще не напечатан
-            if (i === typedText.length) {
-              // Это текущая позиция (курсор)
-              charSpan.classList.add("char-current");
-            }
-          } else if (typedChar === targetText[i]) {
-            // Символ совпал — подсвечиваем зеленым
-            charSpan.classList.add("char-correct");
-          } else {
-            // Символ не совпал — подсвечиваем красным
-            charSpan.classList.add("char-incorrect");
-          }
-        }
-
-        // --- В) АВТОМАТИЧЕСКИЙ СКРОЛЛ НА УРОВНЕ ГЛАЗ ---
-        const currentCharSpan = textDisplay.querySelector(".char-current");
-        if (currentCharSpan) {
-          const containerTop = scrollContainer.getBoundingClientRect().top;
-          const charTop = currentCharSpan.getBoundingClientRect().top;
-          const relativeTop = charTop - containerTop;
-
-          // Если текущая буква уходит ниже 60px от верха блока, сдвигаем скролл
-          if (relativeTop > 60) {
-            scrollContainer.scrollTop += relativeTop - 60;
-          } else if (relativeTop < 20) {
-            scrollContainer.scrollTop = 0;
-          }
-        }
-
-        // --- Г) ПРОВЕРКА ОКОНЧАНИЯ И АВТООТПРАВКА ---
-        if (typedText.length >= targetLength) {
-          const endTime = Date.now();
-          // Рассчитываем время в секундах с 2 знаками после запятой
-          const timeSpent = ((endTime - startTime) / 1000).toFixed(2);
-
-          // Записываем данные в скрытые <input>
-          timeSpentHidden.value = timeSpent;
+      // Записываем данные в скрытые <input>
+      timeSpentHidden.value = timeSpent;
 
 
-          userInput.readOnly = true;
+      userInput.readOnly = true;
 
-          // Автоматически отправляем форму во Flask!
-          typingForm.submit();
-        }
-      });
-    </script>
-  </body>
-</html>
+      // Автоматически отправляем форму во Flask!
+      typingForm.submit();
+    }
+  });
+</script>
+{% endblock %}
+
+

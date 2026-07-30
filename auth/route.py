@@ -30,7 +30,7 @@ def register():
             # flash
             return redirect(url_for('auth.login'))
 
-    return render_template('auth/register.html', logged= is_logged())
+    return render_template('auth/register.html')
 
 @auth_bp.route('/login', methods= ['GET', 'POST'])
 def login():
