@@ -59,5 +59,6 @@ def login():
 def logout():
     session.pop('user')
     #flash
+    session.pop('current_test')
     return redirect(url_for('text.index'))
 

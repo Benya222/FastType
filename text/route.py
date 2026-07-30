@@ -12,65 +12,7 @@ def is_logged():
     return 'user' in session
 #-------------------------------
 
-# @text_bp.route('/', methods= ['GET', 'POST'])
-# def index():
-#     cpm = 0
-#     accuracy = 0
-#     user_time = "00:00"
-#     user_char = 0
-#     personal_texts = None
-#     text_id = None
 
-#     if is_logged():
-#         user_id = session.get('user')
-#         personal_texts = get_personal_texts(user_id)
-
-#     if request.method == 'POST':
-#         time_spent = request.form.get('time_spent')
-#         user_text = request.form.get('user_text')
-#         words_count = request.form.get('words_count', 10, type= int)
-#         difficulty = request.form.get('difficulty', 'easy')
-#         text_id = request.form.get('text')
-
-#         if time_spent and user_text:
-#             time_spent_sec = float(time_spent)
-#             cpm = cpm_func(time_spent_sec, user_text)
-#             original = session.get('original_text')
-#             accuracy = accuracy_func(original, user_text)
-#             user_char = len(user_text)
-#             user_time = user_time_func(time_spent_sec)
-
-#         text= None
-#         if text_id and is_logged():
-#             text_obj = get_personal_text_by_id(text_id, session['user'])
-#             text = text_obj.text
-
-#         if not text:
-#             text = " ".join(generate_random_words(words_count, difficulty))
-#             text_id = None
-
-#         session["original_text"] = text            
-#     else:
-#         text = " ".join(generate_random_words(10, 'easy'))
-#         session["original_text"] = text
- 
-#     return render_template(
-#                             'text/index.html', 
-#                             target_text = text,
-#                             cpm= cpm, 
-#                             accuracy= accuracy, 
-#                             user_char= user_char,
-#                             user_time= user_time,
-#                             personal_texts= personal_texts,
-#                             text_id= text_id,
-#                             logged= is_logged()
-#                             ) 
-            
-
-
-# ================================================================
-# 1. СТРАНИЦА ТРЕНАЖЕРА (Отображение)
-# ================================================================
 @text_bp.route('/', methods=['GET'])
 def index():
     user_id = session.get('user') if is_logged() else None
