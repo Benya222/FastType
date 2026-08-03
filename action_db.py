@@ -1,5 +1,5 @@
 from models import Word, User, PersonalText, PersonalHistory
-
+from peewee import fn
 
 '''create'''
 def add_words(words: list, difficult):
@@ -21,11 +21,20 @@ def add_personal_history(user_id: int, text_title: str, cpm: int, accuracy: int)
 def get_user_by_name(name: str) -> User:
     return User.get(User.name == name)
 
+# -------
 def get_personal_texts(user_id: int):
     return PersonalText.select().where(PersonalText.user == user_id)
 
 def get_personal_text_by_id(text_id: int, user_id: int):
     return PersonalText.get_or_none((PersonalText.id == text_id) & (PersonalText.user == user_id))
+
+# --------
+def get_personal_history(user_id: int):
+    return PersonalHistory.select().where(PersonalHistory.user == user_id)
+
+def get_max_cpm(user_id: int):
+    return 
+
 
 '''update'''
 def edit_personal_text(title: str, text: str, text_id: int, user_id: int):

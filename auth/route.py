@@ -8,6 +8,10 @@ auth_bp = Blueprint('auth', __name__, template_folder='templates')
 #-------------------------------
 def is_logged():
     return 'user' in session
+
+def valid_register(name, password):
+    return name and len(password) >= 4
+
 #-------------------------------
 
 @auth_bp.route('/register', methods= ['GET', 'POST'])
@@ -16,9 +20,11 @@ def register():
     if request.method == 'POST':
         name = request.form.get('name')
         password = request.form.get('password')
-        print(request.form)
-        print(name)
-        print(password)
+
+        if not valid_register(name, password):
+            #flash
+            return redirect(url_for('auth.register'))
+        
 
         if user_exists(name):
             # flash
@@ -59,6 +65,8 @@ def login():
 def logout():
     session.pop('user')
     #flash
-    session.pop('current_test')
+    if 'current_test' in session:
+        session.pop('current_test')
+
     return redirect(url_for('text.index'))
 

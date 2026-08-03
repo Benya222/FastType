@@ -1,7 +1,8 @@
 from random import sample
 from models import Word
 
-def generate_random_words(count: int, difficult: str) -> list:
+
+def generate_random_words(count: int, difficult: str) -> list:    
     words = Word.select().where(Word.difficulty == difficult)
     clean_words = [word.word for word in words]
     return sample(clean_words, k=count)
@@ -23,4 +24,6 @@ def user_time_func(time_spent: float) -> str:
     minutes, seconds = divmod(total_seconds, 60)
 
     return f"{minutes:02d}:{seconds:02d}"
+
+
 

@@ -119,6 +119,8 @@ def save_result():
 
 @text_bp.route('/add_text', methods= ['GET', 'POST'])
 def add_text():
+    if not is_logged():
+        return redirect('text.index')
 
     if request.method == 'POST':
         title = request.form.get('title')
@@ -138,17 +140,30 @@ def add_text():
 
 @text_bp.route('/edit/<id>', methods= ['GET', 'POST'])
 def edit(id):
+    if not is_logged():
+        return redirect('text.index')
+    
     user_id = session.get('user')
     current_text_obj = get_personal_text_by_id(id, user_id)
-    current_title = current_text_obj.title
-    current_text = current_text_obj.text
+
+    if current_text_obj:
+        current_title = current_text_obj.title
+        current_text = current_text_obj.text
+    else:
+        current_title = 'current title not found'
+        current_text = 'current text not found'
+
     if request.method == 'POST':
         new_title = request.form.get('title')
         new_text = request.form.get('text')
 
-        edit_personal_text(new_title, new_text, id, user_id)
-        #flash
-        return redirect(url_for('text.index'))
+        if new_title and new_text:
+            edit_personal_text(new_title, new_text, id, user_id)
+            #flash
+            return redirect(url_for('text.index'))
+        else:
+            #flash
+            return redirect(url_for('text.edit', id= id))
 
 
     return render_template('text/edit.html', 
@@ -158,10 +173,15 @@ def edit(id):
 
 @text_bp.route('/delete/<id>')
 def delete(id):
+    if not is_logged():
+        return redirect('text.index')
+    
     user_id = session.get('user')
     delete_personal_text(id, user_id)
     #flash
-    session.pop('current_test')
+    if 'current_test' in session:
+        session.pop('current_test')
+
     return redirect(url_for('text.index'))
 
 
