@@ -26,4 +26,3 @@ def user_time_func(time_spent: float) -> str:
     return f"{minutes:02d}:{seconds:02d}"
 
 
-

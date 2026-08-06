@@ -1,18 +1,13 @@
 from flask import Blueprint, render_template, request, session, redirect, url_for
 from werkzeug.security import generate_password_hash, check_password_hash
 from action_db import *
+from utils import is_logged, valid_register
+
 
 
 auth_bp = Blueprint('auth', __name__, template_folder='templates')
 
-#-------------------------------
-def is_logged():
-    return 'user' in session
 
-def valid_register(name, password):
-    return name and len(password) >= 4
-
-#-------------------------------
 
 @auth_bp.route('/register', methods= ['GET', 'POST'])
 def register():

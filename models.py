@@ -1,6 +1,6 @@
 from peewee import *
 from datetime import datetime
-
+from utils import calculate_score
 
 db = SqliteDatabase('fasttype.db')
 
@@ -14,24 +14,29 @@ class User(BaseModel):
     password = CharField()
     
 
-class GeneralText(BaseModel):
-    title = CharField()
-    text = CharField()
-    characters = IntegerField()
-
 class PersonalText(BaseModel):
     title = CharField()
     text = CharField()
-    characters = IntegerField()
     user = ForeignKeyField(User, backref="personal_text")
+
+    @property
+    def characters(self):
+        return len(self.text)
 
 class PersonalHistory(BaseModel):
     text_title = CharField()
     cpm = IntegerField()
-    wpm = IntegerField()
     accuracy = IntegerField()
     completed_at = DateTimeField(default= datetime.now)
     user = ForeignKeyField(User, backref="personal_history")
+
+    @property
+    def score(self):
+        return calculate_score(self.cpm, self.accuracy)
+
+    @property
+    def wpm(self):
+        return round(self.cpm / 5)
 
 class Word(BaseModel):
     word = CharField(unique= True)
@@ -40,7 +45,7 @@ class Word(BaseModel):
 
 def init_db():
     db.connect()
-    db.create_tables([User, GeneralText, PersonalText, PersonalHistory, Word])
+    db.create_tables([User, PersonalText, PersonalHistory, Word])
 
 
 

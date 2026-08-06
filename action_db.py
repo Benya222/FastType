@@ -10,12 +10,10 @@ def add_user(name: str, password: str):
     User.create(name= name, password= password)
 
 def add_personal_text(title: str, text: str, user_id: int):
-    characters = len(text)
-    PersonalText.create(title= title, text= text, characters= characters, user= user_id)
+    PersonalText.create(title= title, text= text, user= user_id)
 
 def add_personal_history(user_id: int, text_title: str, cpm: int, accuracy: int):
-    wpm = round(cpm / 5)
-    PersonalHistory.create(text_title= text_title, cpm= cpm, wpm= wpm, accuracy= accuracy, user= user_id)
+    PersonalHistory.create(text_title= text_title, cpm= cpm, accuracy= accuracy, user= user_id)
 
 '''read'''
 def get_user_by_name(name: str) -> User:
@@ -33,8 +31,13 @@ def get_personal_history(user_id: int):
     return PersonalHistory.select().where(PersonalHistory.user == user_id)
 
 def get_max_cpm(user_id: int):
-    return 
+    return PersonalHistory.select(fn.MAX(PersonalHistory.cpm)).where(PersonalHistory.id == user_id).scalar()
 
+def get_max_accuracy(user_id: int):
+    return PersonalHistory.select(fn.MAX(PersonalHistory.accuracy)).where(PersonalHistory.id == user_id).scalar()
+
+def get_max_score(user_id: int):
+    return PersonalHistory.select(fn.MAX(PersonalHistory.score)).where(PersonalHistory.id == user_id).scalar()
 
 '''update'''
 def edit_personal_text(title: str, text: str, text_id: int, user_id: int):

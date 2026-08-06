@@ -1,16 +1,12 @@
 from flask import Blueprint, render_template, request, session, redirect, url_for
 from services import generate_random_words, cpm_func, accuracy_func, user_time_func
 from action_db import *
-
+from utils import is_logged
 
 
 text_bp = Blueprint('text', __name__, template_folder='templates')
 
 
-#-------------------------------
-def is_logged():
-    return 'user' in session
-#-------------------------------
 
 
 @text_bp.route('/', methods=['GET'])
@@ -150,8 +146,8 @@ def edit(id):
         current_title = current_text_obj.title
         current_text = current_text_obj.text
     else:
-        current_title = 'current title not found'
-        current_text = 'current text not found'
+        current_title = 'current title not found...'
+        current_text = 'current text not found...'
 
     if request.method == 'POST':
         new_title = request.form.get('title')
