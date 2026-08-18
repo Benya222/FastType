@@ -1,7 +1,6 @@
 from random import sample
 from models import Word
 
-
 def generate_random_words(count: int, difficult: str) -> list:    
     words = Word.select().where(Word.difficulty == difficult)
     clean_words = [word.word for word in words]

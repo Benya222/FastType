@@ -1,0 +1,47 @@
+{% extends "base.html" %}
+
+{% block style %} 
+{% endblock %} 
+
+{% block page_title %} Profile {% endblock %} 
+
+{% block main_content %}
+<h1 class="title">Profile</h1>
+<div class="profile__img"></div>
+<div class="progress">
+  <p class="greet">
+    Hello, {{ user_name }}!
+  </p>
+  <p>
+    Best score: {{ best_score }}
+  </p>
+</div>
+{% if history %}
+<table>
+  <thead>
+    <tr>
+      <th>Title</th>
+      <th>Date</th>
+      <th>Time</th>
+      <th>CPM</th>
+      <th>WPM</th>
+      <th>Accuracy</th>
+      <th>Score</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for record in history %}
+    <tr>
+      <td>{{ record.text_title }}</td>
+      <td>{{ record.formatted_date }}</td>
+      <td>{{ record.formatted_time }}</td>
+      <td>{{ record.cpm }}</td>
+      <td>{{ record.wpm }}</td>
+      <td>{{ record.accuracy }}</td>
+      <td>{{ record.score }}</td>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
+{% endif %}
+{% endblock %}

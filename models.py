@@ -26,7 +26,7 @@ class PersonalText(BaseModel):
 class PersonalHistory(BaseModel):
     text_title = CharField()
     cpm = IntegerField()
-    accuracy = IntegerField()
+    accuracy = FloatField()
     completed_at = DateTimeField(default= datetime.now)
     user = ForeignKeyField(User, backref="personal_history")
 
@@ -38,6 +38,14 @@ class PersonalHistory(BaseModel):
     def wpm(self):
         return round(self.cpm / 5)
 
+    @property
+    def formatted_date(self):
+        return self.completed_at.strftime('%d.%m.%Y')
+
+    @property
+    def formatted_time(self):
+        return self.completed_at.strftime('%H:%M')
+
 class Word(BaseModel):
     word = CharField(unique= True)
     difficulty = CharField()    # easy, medium, hard
@@ -46,6 +54,7 @@ class Word(BaseModel):
 def init_db():
     db.connect()
     db.create_tables([User, PersonalText, PersonalHistory, Word])
+
 
 
 

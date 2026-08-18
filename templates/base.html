@@ -22,8 +22,8 @@
     <div class="container container--header">
       <a href="{{ url_for('text.index') }}" class="logo link">FastType</a>
       <div class="auth">
-        {% if session['user'] %}
-        <a href="#" class=" link">
+        {% if session.get('user') %}
+        <a href="{{ url_for('profiles.profile', user_id= session.get('user')) }}" class="link">
           <svg width="48px" height="48px">
             <use href="{{ url_for('static', filename='image/sprite.svg') }}#icon-profile"></use>
           </svg>
