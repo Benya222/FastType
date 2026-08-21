@@ -19,7 +19,7 @@ def add_personal_history(user_id: int, text_title: str, cpm: int, accuracy: int)
 def get_user_by_name(name: str) -> User:
     return User.get(User.name == name)
 
-def get_user_name_by_id(user_id) -> User:
+def get_user_by_id(user_id) -> User:
     return User.get(User.id == user_id)
 
 # -------
@@ -33,14 +33,9 @@ def get_personal_text_by_id(text_id: int, user_id: int):
 def get_personal_history(user_id: int):
     return PersonalHistory.select().where(PersonalHistory.user == user_id)
 
-def get_max_cpm(user_id: int):
-    return PersonalHistory.select(fn.MAX(PersonalHistory.cpm)).where(PersonalHistory.user == user_id).scalar()
-
-def get_max_accuracy(user_id: int):
-    return PersonalHistory.select(fn.MAX(PersonalHistory.accuracy)).where(PersonalHistory.user == user_id).scalar()
-
 def get_max_score(user_id: int):
-    return PersonalHistory.select(fn.MAX(PersonalHistory.score)).where(PersonalHistory.user == user_id).scalar()
+    history = PersonalHistory.select().where(PersonalHistory.user == user_id)
+    return max((record.score for record in history), default= 0)
 
 '''update'''
 def edit_personal_text(title: str, text: str, text_id: int, user_id: int):

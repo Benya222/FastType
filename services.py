@@ -12,7 +12,6 @@ def cpm_func(time_sec: float, text):
     return round((length / time_sec) * 60)
 
 
-
 def accuracy_func(original: str, typed: str) -> int:
     correct = sum(a == b for a, b in zip(original, typed))
     accuracy = (correct / len(original)) * 100

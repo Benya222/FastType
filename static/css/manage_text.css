@@ -28,7 +28,7 @@
   line-height: 1.2;
   letter-spacing: 0%;
 
-  color: #424680;
+  color: var(--primary-color);
 }
 
 .manage-form__input {
@@ -42,7 +42,7 @@
   font-weight: 400;
   font-size: 20px;
   line-height: 1.5;
-  color: #424680;
+  color: var(--primary-color);
 }
 
 .manage-form__input:focus {
@@ -61,7 +61,7 @@
   font-weight: 400;
   font-size: 20px;
   line-height: 1.5;
-  color: #424680;
+  color: var(--primary-color);
 }
 
 .manage-form__textarea:focus {
