@@ -1,1 +1,2 @@
 peewee==4.5.3
+RapidFuzz==3.14.6

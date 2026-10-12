@@ -55,3 +55,7 @@ class PublicText(BaseModel):
     char_count = IntegerField()
     word_count = IntegerField()
     source_id = CharField(unique= True, null= True)
+
+def init_db():
+    db.connect()
+    db.create_tables([PublicText])
