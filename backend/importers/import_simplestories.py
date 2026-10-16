@@ -1,8 +1,18 @@
+''' Do imports in current directory '''
+import os, sys
 import time
 import requests
+''' ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ '''
+#==========================================================================
+parent_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
+if parent_dir not in sys.path:
+    sys.path.append(parent_dir)
+#===========================================================================
 
+''' Do imports in parent directory '''
 from models import db, PublicText
 
+''' ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ '''
 
 API_URL = "https://datasets-server.huggingface.co/rows"
 
