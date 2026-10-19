@@ -19,9 +19,10 @@ def evaluate_public_text(query: str, text: object) -> float:
 
 def smart_search(query: str, texts: list[object], score_cutoff= 60) -> list[object]:
 
-    sorted_texts = sorted(texts, key= lambda i: evaluate_public_text(query, i), reverse= True)
-    filtred_texts = filter(lambda i: evaluate_public_text(query, i) > score_cutoff, sorted_texts)
-    return filtred_texts
+    filtred_texts = filter(lambda i: evaluate_public_text(query, i) > score_cutoff, texts)
+    sorted_texts = sorted(filtred_texts, key= lambda i: evaluate_public_text(query, i), reverse= True)
+    
+    return sorted_texts
 
 def print_to_check_smart_search(query: str, texts: list[object], score_cutoff= 40):
     search_results = smart_search(query, texts, score_cutoff)
