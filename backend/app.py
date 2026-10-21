@@ -1,8 +1,16 @@
 from flask import Flask, request
 from models import init_db
-from action_db import get_random_words
+from action_db import get_public_text_by_id
 from utils import success_response, error_response
-from service import ArgsValueError, PublicTextArgs, PublicTextService, list_of_public_text_to_dict
+from service import (ArgsValueError,
+                     NotFoundError, 
+                     PublicTextArgs, 
+                     PublicTextService, 
+                     WordsArgs, 
+                     WordsService,
+                     to_full_dict,
+                     to_summary_dict)
+
 
 app = Flask(__name__)
 
@@ -10,12 +18,16 @@ init_db()
 
 @app.get("/api/words")
 def get_words():
-    word_count = request.args.get('count', 10)
-    difficult = request.args.get('difficult', 'medium')
 
-    random_words = get_random_words(word_count, difficult)
+    words_args = WordsArgs(
+        count= request.args.get('count', 10),
+        difficult= request.args.get('difficult', 'medium')
+    )
 
-    return success_response(data=random_words)
+    service = WordsService(words_args)
+    words = service.fetch_random_words()
+
+    return success_response(data=words)
 
 
 @app.get("/api/text")
@@ -32,7 +44,7 @@ def get_public_texts():
     service = PublicTextService(text_args)
     texts, total_pages = service.fetch_texts()
 
-    result_in_dict = list_of_public_text_to_dict(texts)
+    texts_in_dict = [to_summary_dict(text) for text in texts]
     meta = {
         "page": text_args.page,
         "per_page": text_args.per_page,
@@ -40,13 +52,29 @@ def get_public_texts():
         "has_next": total_pages > text_args.page
     }
 
-    return success_response(data= result_in_dict, meta= meta)
+    return success_response(data= texts_in_dict, meta= meta)
+
+
+@app.get("/api/text/<text_id>")
+def get_public_text(text_id):
+    text = get_public_text_by_id(text_id)
+
+    if text is None:
+        raise NotFoundError(f"Text by '{text_id}' not found")
+
+    return success_response(
+        data= to_full_dict(text)
+    )
+
+
+@app.errorhandler(NotFoundError)
+def handle_not_found_error(error):
+    return error_response(message= str(error), code= 404)
 
 
 @app.errorhandler(ArgsValueError)
 def handle_args_error(error):
     return error_response(message= str(error), code=400)
-
 
 
 app.run(debug=True)

@@ -1,24 +1,52 @@
 from models import PublicText
-from action_db import get_all_public_texts
+from action_db import get_summary_public_texts, get_random_words
 from smart_search import smart_search
 from utils import custom_paginate
 from math import ceil
 
-def list_of_public_text_to_dict(data: list[PublicText]) -> list[dict]:
-    return [
-        {
+def to_full_dict(text: PublicText) -> dict:
+    return {
         "id": text.id,
         "title": text.title,
         "text": text.text,
         "category": text.category,
         "tags": text.tags,
         "word_count": text.word_count,
-        } for text in data]
+        "char_count": text.char_count
+        }
 
+def to_summary_dict(text: PublicText) -> dict:
+    return {
+        "id": text.id,
+        "title": text.title,
+        "word_count": text.word_count,
+        "char_count": text.char_count
+        }
+
+def transform_into_a_number(value: str | int) -> int:
+
+    if isinstance(value, bool):
+        raise ArgsValueError("The value must be an integer")
+
+    if isinstance(value, int):
+        return value
+
+    if not isinstance(value, str):
+        raise ArgsValueError("The value must be a string or integer")
+
+    value = value.strip()
+
+    if not value.isdecimal():
+        raise ArgsValueError("The value must be a positive integer")
+
+    return int(value)
 
 class ArgsValueError(Exception):
     pass
-    
+
+class NotFoundError(Exception):
+    pass
+ 
 class PublicTextArgs():
 
     MAX_PER_PAGE = 90
@@ -53,7 +81,7 @@ class PublicTextArgs():
     @per_page.setter
     def per_page(self, value: str | int):
 
-        value = self.transform_into_a_number(value)
+        value = transform_into_a_number(value)
         
         if not 1 <= value <= self.MAX_PER_PAGE:
             raise ArgsValueError("Too many records for one request")
@@ -68,7 +96,7 @@ class PublicTextArgs():
     @page.setter
     def page(self, value: str | int):
 
-        value = self.transform_into_a_number(value)
+        value = transform_into_a_number(value)
 
         if value < 1:
             raise ArgsValueError("Page cannot be less then one")
@@ -104,7 +132,7 @@ class PublicTextArgs():
             self._from_word_count = None
             return
 
-        value = self.transform_into_a_number(value)
+        value = transform_into_a_number(value)
 
         if value < self.MIN_WORD_COUNT or value > self.MAX_WORD_COUNT:
             raise ArgsValueError("The value out of range")
@@ -123,7 +151,7 @@ class PublicTextArgs():
             self._to_word_count = None
             return
 
-        value = self.transform_into_a_number(value)
+        value = transform_into_a_number(value)
 
         if value < self.MIN_WORD_COUNT or value > self.MAX_WORD_COUNT:
             raise ArgsValueError("The value out of range")
@@ -131,28 +159,8 @@ class PublicTextArgs():
         self._to_word_count = value    
 
 
-    @staticmethod
-    def transform_into_a_number(value: str | int) -> int:
-
-        if isinstance(value, bool):
-            raise ArgsValueError("The value must be an integer")
-
-        if isinstance(value, int):
-            return value
-
-        if not isinstance(value, str):
-            raise ArgsValueError("The value must be a string or integer")
-
-        value = value.strip()
-
-        if not value.isdecimal():
-            raise ArgsValueError("The value must be a positive integer")
-
-        return int(value)
-
-
 class PublicTextService():
-    ALL_TEXTS = get_all_public_texts() # ModelSelect
+    ALL_TEXTS = get_summary_public_texts() # ModelSelect
 
     def __init__(self, args: PublicTextArgs):
         self.args = args
@@ -220,5 +228,53 @@ class PublicTextService():
         return ceil(total / self.args.per_page)
 
 
+class WordsArgs():
+
+    DIFFICULT_VERSIONS = ['easy', 'medium', 'hard']
+    MIN_WORD_COUNT = 1
+    MAX_WORD_COUNT = 100
+
+    def __init__(self, count: int | str = 10, difficult: str = 'medium'):
+
+        self.count = count
+        self.difficult = difficult
 
 
+    @property
+    def count(self):
+        return self._count
+
+    @count.setter
+    def count(self, value: int | str):
+
+        value = transform_into_a_number(value)
+
+        if value < self.MIN_WORD_COUNT or value > self.MAX_WORD_COUNT:
+            raise ArgsValueError("The 'count' cannot be less then 1 and greater then 100")
+
+        self._count = value
+
+
+    @property
+    def difficult(self):
+        return self._difficult
+
+    @difficult.setter
+    def difficult(self, value: str):
+
+        if not isinstance(value, str):
+            raise ArgsValueError("The 'difficult' must be a string")
+
+        if value not in self.DIFFICULT_VERSIONS:
+            raise ArgsValueError(f"The 'difficult' value must be one of these: {", ".join(self.DIFFICULT_VERSIONS)}.")
+
+        self._difficult = value
+
+
+class WordsService():
+
+    def __init__(self, args: WordsArgs):
+        self.args = args
+
+    def fetch_random_words(self) -> str:
+        return " ".join(get_random_words(self.args.count, self.args.difficult))
