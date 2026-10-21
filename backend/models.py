@@ -58,4 +58,4 @@ class PublicText(BaseModel):
 
 def init_db():
     db.connect()
-    db.create_tables([PublicText])
+    db.create_tables([PublicText, Word])

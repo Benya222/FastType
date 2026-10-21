@@ -1,84 +1,20 @@
-from flask import jsonify
-from models import PersonalText
-from smart_search import all_public_texts, smart_search
+from models import PublicText
+from action_db import get_all_public_texts
+from smart_search import smart_search
+from utils import custom_paginate
+from math import ceil
 
-def success_response(data=None, message=None, meta=None, code=200):
-    response = {"status": "success"}
+def list_of_public_text_to_dict(data: list[PublicText]) -> list[dict]:
+    return [
+        {
+        "id": text.id,
+        "title": text.title,
+        "text": text.text,
+        "category": text.category,
+        "tags": text.tags,
+        "word_count": text.word_count,
+        } for text in data]
 
-    if message:
-        response["message"] = message
-
-    if data is not None:
-        response["data"] = data
-
-    if meta:
-        response["meta"] = meta
-
-    return jsonify(response), code           
-
-
-def error_response(message, errors=None, code=400):
-    response = {
-        "status": "success",
-        "message": message
-    }
-
-    if errors:
-        response["errors"] = errors
-
-    return jsonify(response), code   
-
-def custom_paginate(data: list, page: int = 1, per_page: int = 20):
-    start = (page - 1) * per_page
-    end = start + per_page if start + per_page < len(data) else len(data) - 1
-    return data[start:end]
-
-def process_public_texts_search(
-        per_page:  int = 20, 
-        page: int = 1,
-        query: str = None, 
-        from_word_count: int = None, 
-        to_word_count: int = None 
-        ):
-
-
-    is_var_fwc = from_word_count is not None
-    is_var_twc = to_word_count is not None
-
-    if query is None and from_word_count is None and to_word_count is None:
-        return all_public_texts.paginate(page, per_page)
-
-    if is_var_fwc or is_var_twc:
-
-        if query is None:
-            def word_count_conditions() -> list:
-                if not is_var_twc:
-                    return  [PersonalText.word_count >= from_word_count]
-
-                if not is_var_fwc:
-                    return [PersonalText.word_count <= to_word_count]
-
-                return [PersonalText.word_count >= from_word_count, PersonalText.word_count <= to_word_count]
-
-            return all_public_texts.where(*word_count_conditions()).paginate(page, per_page)
-
-
-        def is_valid_word_count(text: PersonalText) -> bool:
-
-            if not is_var_twc:
-                return  text.word_count >= from_word_count
-
-            if not is_var_fwc:
-                return text.word_count <= to_word_count
-
-            return text.word_count >= from_word_count and text.word_count <= to_word_count
-
-        word_count_filtred = list(filter(is_valid_word_count, all_public_texts))
-        query_filtred = smart_search(query, word_count_filtred)
-        return custom_paginate(query_filtred, page, per_page)
-    else:
-        query_filtred = smart_search(query, all_public_texts)
-        return custom_paginate(query_filtred, page, per_page)
 
 class ArgsValueError(Exception):
     pass
@@ -102,7 +38,7 @@ class PublicTextArgs():
         self.query = query # str | None, deflaut None
         self.from_word_count = from_word_count # int | None, from_word_count < to_word_count and from_word_count >= MIN_WORD_COUNT, default None
         self.to_word_count = to_word_count # int | None, to_word_count > from_word_count and to_word_count <= MAX_WORD_COUNT, default None
-        
+
 
         if (self._from_word_count is not None
             and self._to_word_count is not None
@@ -213,3 +149,76 @@ class PublicTextArgs():
             raise ArgsValueError("The value must be a positive integer")
 
         return int(value)
+
+
+class PublicTextService():
+    ALL_TEXTS = get_all_public_texts() # ModelSelect
+
+    def __init__(self, args: PublicTextArgs):
+        self.args = args
+
+        self.is_var_fwc = self.args.from_word_count is not None
+        self.is_var_twc = self.args.to_word_count is not None
+        self.is_var_query = self.args.query is not None
+
+    
+    def fetch_texts(self):
+
+        if (not self.is_var_query
+            and not self.is_var_fwc
+            and not self.is_var_twc):
+
+            total_pages = self.total_pages(self.ALL_TEXTS.count())
+            return list(self.ALL_TEXTS.paginate(self.args.page, self.args.per_page)), total_pages
+
+        if self.is_var_fwc or self.is_var_twc:
+
+            if not self.is_var_query:
+
+                conditions = self.word_count_conditions()
+                result = self.ALL_TEXTS.where(*conditions)
+
+                total_pages = self.total_pages(result.count())
+                return result.paginate(self.args.page, self.args.per_page), total_pages
+
+            
+            word_count_filtred = list(filter(self.is_valid_word_count, self.ALL_TEXTS))
+            query_filtred = smart_search(self.args.query, word_count_filtred)
+
+            total_pages = self.total_pages(len(query_filtred))
+            return custom_paginate(query_filtred, self.args.page, self.args.per_page), total_pages
+        else:
+            query_filtred = smart_search(self.args.query, self.ALL_TEXTS)
+            total_pages = self.total_pages(len(query_filtred))
+
+            return custom_paginate(query_filtred, self.args.page, self.args.per_page), total_pages
+
+    def word_count_conditions(self) -> list[bool]:
+
+        conditions = []
+
+        if self.is_var_fwc:
+            conditions.append(PublicText.word_count >= self.args.from_word_count)
+
+        if self.is_var_twc:
+            conditions.append(PublicText.word_count <= self.args.to_word_count)
+
+        return conditions                        
+
+
+    def is_valid_word_count(self, text: PublicText) -> bool:
+
+        if self.is_var_fwc and text.word_count < self.args.from_word_count:
+            return False
+
+        if self.is_var_twc and text.word_count > self.args.to_word_count:
+            return False
+
+        return True
+
+    def total_pages(self, total: int) -> int:
+        return ceil(total / self.args.per_page)
+
+
+
+
