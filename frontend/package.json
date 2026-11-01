@@ -1,7 +1,7 @@
 {
   "name": "FastType-frontend",
   "version": "2.0.0",
-  "description": "",
+  "description": "The frontend of the FastType web application is a typing trainer designed to help you type faster.",
   "source": "src/templates/*.html",
   "scripts": {
     "start": "parcel",
@@ -13,5 +13,8 @@
   "type": "commonjs",
   "devDependencies": {
     "parcel": "^2.16.4"
+  },
+  "dependencies": {
+    "nouislider": "^15.8.1"
   }
 }

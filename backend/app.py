@@ -1,4 +1,5 @@
 from flask import Flask, request
+from flask_cors import CORS
 from models import init_db
 from action_db import get_public_text_by_id
 from utils import success_response, error_response
@@ -13,7 +14,7 @@ from service import (ArgsValueError,
 
 
 app = Flask(__name__)
-
+CORS(app)
 init_db()
 
 @app.get("/api/words")

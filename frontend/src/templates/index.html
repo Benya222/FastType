@@ -1,0 +1,267 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>FastType</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/normalize/8.0.1/normalize.min.css"
+      integrity="sha512-NhSC1YmyruXifcj/KFRWoC561YpHpc5Jtzgvbuzx5VozKpWvQ+4nXhPdFgmx8xqexRcpAglTj9sIBWINXa8x5w=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer"
+    />
+    <link rel="stylesheet" href="../css/main.css" />
+  </head>
+  <body>
+    <header class="header">
+      <div class="container-header">
+        <nav class="header-nav">
+          <a href="#" class="link logo">FastType</a>
+          <ul class="list header-nav__list">
+            <li class="header-nav__item--current">
+              <a href="#" class="link">
+                <svg class="header-nav__icons">
+                  <use href="../images/sprite.svg#icon-keyboard"></use>
+                </svg>
+              </a>
+            </li>
+            <li>
+              <a href="#" class="link">
+                <svg class="header-nav__icons">
+                  <use href="../images/sprite.svg#icon-trophy"></use>
+                </svg>
+              </a>
+            </li>
+          </ul>
+        </nav>
+        <div class="autorization">
+          <a href="#" class="autorization__item link">Login</a>
+          <a href="#" class="autorization__item link">Register</a>
+        </div>
+      </div>
+    </header>
+    <main>
+      <section class="choose-typing">
+        <div class="container container--flex">
+          <div class="choose-type">
+            <input
+              type="radio"
+              name="words-or-text"
+              id="words"
+              class="visualy-hidden"
+              value="words"
+              checked
+            />
+            <label for="words" class="choose-type__label">words</label>
+            <input
+              type="radio"
+              name="words-or-text"
+              id="text"
+              class="visualy-hidden"
+              value="text"
+            />
+            <label for="text" class="choose-type__label">text</label>
+          </div>
+
+          <div id="words-options" class="words-options">
+            <div class="words-options__container">
+              <input
+                type="radio"
+                name="difficulty"
+                id="easy"
+                class="visualy-hidden"
+                value="easy"
+                checked
+              />
+              <label for="easy" class="words-options__label">easy</label>
+              <input
+                type="radio"
+                name="difficulty"
+                id="medium"
+                class="visualy-hidden"
+                value="medium"
+              />
+              <label for="medium" class="words-options__label">medium</label>
+              <input
+                type="radio"
+                name="difficulty"
+                id="hard"
+                class="visualy-hidden"
+                value="hard"
+              />
+              <label for="hard" class="words-options__label">hard</label>
+            </div>
+
+            <div class="words-options__container">
+              <input
+                type="radio"
+                name="words-count"
+                id="10"
+                class="visualy-hidden"
+                value="10"
+                checked
+              />
+              <label for="10" class="words-options__label">10</label>
+
+              <input
+                type="radio"
+                name="words-count"
+                id="25"
+                class="visualy-hidden"
+                value="25"
+              />
+              <label for="25" class="words-options__label">25</label>
+
+              <input
+                type="radio"
+                name="words-count"
+                id="50"
+                class="visualy-hidden"
+                value="50"
+              />
+              <label for="50" class="words-options__label">50</label>
+            </div>
+          </div>
+          <div id="text-options" class="text-options" hidden>
+            <button type="button" class="choose-text-btn" data-open-modal>
+              choose text
+            </button>
+          </div>
+        </div>
+      </section>
+      <section class="typing">
+        <div class="container">
+          <div class="typing__box">
+            <div class="typing__viewport">
+              <div class="typing__display" id="textDisplay"></div>
+            </div>
+
+            <textarea
+              class="typing__input"
+              name="user-text"
+              id="userInput"
+              spellcheck="false"
+              autofocus
+            ></textarea>
+          </div>
+          <button type="button" class="typing__update" id="repeatBtn">
+            <svg class="icon-repeat">
+              <use href="../images/sprite.svg#icon-repeat"></use>
+            </svg>
+          </button>
+        </div>
+      </section>
+      <section class="results">
+        <div class="container">
+          <ul class="results__list list">
+            <li class="results__item">
+              <svg class="results__icon">
+                <use href="../images/sprite.svg#icon-clock"></use>
+              </svg>
+              <div class="results__container">
+                <p class="results__name">time</p>
+                <p class="results__result" id="resultTime">00:00</p>
+              </div>
+            </li>
+            <li class="results__item">
+              <svg class="results__icon--keyboard">
+                <use href="../images/sprite.svg#icon-keyboard"></use>
+              </svg>
+              <div class="results__container">
+                <p class="results__name">symbols</p>
+                <p class="results__result" id="resultSymbols">0000</p>
+              </div>
+            </li>
+            <li class="results__item">
+              <svg class="results__icon">
+                <use href="../images/sprite.svg#icon-speedometer"></use>
+              </svg>
+              <div class="results__container">
+                <p class="results__name">speed</p>
+                <p class="results__result">
+                  <span id="resultSpeed">000</span> CPM
+                </p>
+              </div>
+            </li>
+            <li class="results__item">
+              <svg class="results__icon">
+                class="results__icon"
+                <use href="../images/sprite.svg#icon-accuracy"></use>
+              </svg>
+              <div class="results__container">
+                <p class="results__name">accuracy</p>
+                <p class="results__result">
+                  <span id="resultAccuracy">0</span>%
+                </p>
+              </div>
+            </li>
+            <li class="results__item">
+              <svg class="results__icon">
+                <use href="../images/sprite.svg#icon-graph"></use>
+              </svg>
+              <div class="results__container">
+                <p class="results__name">score</p>
+                <p class="results__result" id="resultScore">0000</p>
+              </div>
+            </li>
+          </ul>
+        </div>
+      </section>
+    </main>
+    <div class="backdrop is-hidden" data-modal>
+      <div class="modal js-text-modal">
+        <button type="button" class="modal__close-btn" data-close-modal>
+          <svg class="modal__close-icon">
+            <use href="../images/sprite.svg#icon-x"></use>
+          </svg>
+        </button>
+        <div class="modal-container">
+          <section class="search">
+            <input
+              type="text"
+              class="search__input"
+              name="text-search"
+              id="textSearchInput"
+            />
+            <button type="button" class="search__input-btn" id="textSearchBtn">
+              <svg class="search__icon-search">
+                <use href="../images/sprite.svg#icon-search"></use>
+              </svg>
+            </button>
+            <button
+              type="button"
+              class="search__filter-btn"
+              id="openFilterModal"
+            >
+              <svg class="search__icon-filter">
+                <use href="../images/sprite.svg#icon-filter"></use>
+              </svg>
+            </button>
+            <div class="filter-modal js-filter-modal" hidden>
+              <h3 class="filter-modal__title">words count</h3>
+              <div class="filter-modal__count-container">
+                <div class="filter-modal__count" id="filterFromCount"></div>
+                <div class="filter-modal__count" id="filterToCount"></div>
+              </div>
+              <div id="filterSlider"></div>
+              <button type="button" class="filter-modal__btn" id="filterBtn">
+                apply
+              </button>
+            </div>
+          </section>
+          <section class="search-result">
+            <ul class="search-result__list list" id="searchResultList"></ul>
+          </section>
+        </div>
+      </div>
+    </div>
+    <script src="../js/index.js" type="module"></script>
+  </body>
+</html>
