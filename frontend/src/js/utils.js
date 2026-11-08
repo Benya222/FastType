@@ -26,3 +26,7 @@ export function formatTime(seconds) {
 
   return `${String(minutes).padStart(2, "0")}:${String(remainingSeconds).padStart(2, "0")}`;
 }
+
+export function formatText(text) {
+  return text.replace(/\s+/g, " ").trim();
+}

@@ -4,6 +4,7 @@
   --bg-secodary-clr: #b5c9d7;
   --secondary-clr: #d9e8ec;
   --unactivate-clr: #7e9ab7;
+  --unactivate-tranp-clr: rgba(126, 154, 183, 0.4);
   --white-clr: #ffffff;
   --bg-clr: #e6faf8;
   --bg-tranp-clr: #e6faf899;
@@ -171,6 +172,9 @@ body.focus-mode::before {
   color: var(--primary-tranp-clr);
 
   border-radius: 8px;
+  transition:
+    background-color 300ms ease,
+    color 300ms ease;
 }
 
 .choose-type__label:hover,
@@ -238,6 +242,16 @@ body.focus-mode::before {
 
   border: none;
   border-radius: 8px;
+
+  transition:
+    background-color 300ms ease,
+    color 300ms ease;
+}
+
+.choose-text-btn:hover,
+.choose-text-btn:focus {
+  background-color: var(--primary-clr);
+  color: var(--secondary-clr);
 }
 
 /* typing */
@@ -353,8 +367,8 @@ body.focus-mode::before {
 }
 
 .results__icon--keyboard {
-  width: 49px;
-  height: 49px;
+  width: 36px;
+  height: 25px;
   fill: currentColor;
 }
 
@@ -402,14 +416,28 @@ body.focus-mode::before {
 
 .modal__close-btn {
   display: block;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+
   margin-left: auto;
   margin-right: 12px;
   margin-top: 12px;
-  margin-bottom: 8px;
+  margin-bottom: 6px;
   padding: 0;
   border: none;
   color: var(--primary-tranp-clr);
+
   background-color: var(--secondary-clr);
+  transition:
+    background-color 300ms ease,
+    color 300ms ease;
+}
+
+.modal__close-btn:hover,
+.modal__close-btn:focus {
+  background-color: var(--primary-clr);
+  color: var(--secondary-clr);
 }
 
 .modal__close-icon {
@@ -486,6 +514,16 @@ body.focus-mode::before {
   border: 1px solid var(--primary-clr);
   border-radius: 12px;
   color: var(--primary-clr);
+
+  transition:
+    background-color 300ms ease,
+    color 300ms ease;
+}
+
+.search__filter-btn:hover,
+.search__filter-btn:focus {
+  background-color: var(--primary-clr);
+  color: var(--secondary-clr);
 }
 
 .search__icon-filter {
@@ -586,6 +624,10 @@ body.focus-mode::before {
   font-size: 20px;
   line-height: 1;
   letter-spacing: 0%;
+
+  transition:
+    background-color 300ms ease,
+    color 300ms ease;
 }
 
 .filter-modal__btn:hover,
@@ -600,10 +642,13 @@ body.focus-mode::before {
   margin-top: 15px;
 }
 
-.search-result__list {
+.search-result__viewport {
   height: 648px;
   overflow-x: hidden;
   overflow-y: auto;
+
+  scrollbar-width: auto;
+  scrollbar-color: var(--primary-clr) var(--unactivate-tranp-clr);
 }
 
 .search-result__item {
@@ -618,6 +663,8 @@ body.focus-mode::before {
 
   color: var(--primary-clr);
   background-color: var(--secondary-clr);
+
+  transition: background-color 300ms ease;
 }
 
 .search-result__item:hover,

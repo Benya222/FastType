@@ -172,7 +172,7 @@
             </li>
             <li class="results__item">
               <svg class="results__icon--keyboard">
-                <use href="../images/sprite.svg#icon-keyboard"></use>
+                <use href="../images/sprite.svg#icon-keyboard-v2"></use>
               </svg>
               <div class="results__container">
                 <p class="results__name">symbols</p>
@@ -257,7 +257,10 @@
             </div>
           </section>
           <section class="search-result">
-            <ul class="search-result__list list" id="searchResultList"></ul>
+            <div class="search-result__viewport" id="scrollContainer">
+              <ul class="search-result__list list" id="searchResultList"></ul>
+              <div id="loader"></div>
+            </div>
           </section>
         </div>
       </div>

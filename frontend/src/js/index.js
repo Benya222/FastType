@@ -1,5 +1,6 @@
 import { ApiService } from "./service";
 import { TypingBox } from "./typing-box";
+import { formatText } from "./utils";
 import noUiSlider from "nouislider";
 import "nouislider/dist/nouislider.css";
 
@@ -28,17 +29,34 @@ const filterFromCountEl = document.getElementById("filterFromCount");
 const filterToCountEl = document.getElementById("filterToCount");
 
 // ==== Text List Elements ============================ //
+const scrollContainerEl = document.getElementById("scrollContainer");
 const textListEl = document.getElementById("searchResultList");
 
 // ==== Init Custom Instruments ========================= //
 const service = new ApiService();
 const typingBox = new TypingBox();
 
+// ==== Text Items Observer ============================ //
+const loader = document.getElementById("loader");
+const observer = new IntersectionObserver(
+  (entries) => {
+    const entry = entries[0];
+    if (entry.isIntersecting) {
+      loadTextItems();
+    }
+  },
+  {
+    root: scrollContainerEl,
+    rootMargin: "300px",
+    threshold: 0,
+  },
+);
+let isLoading = false;
+let hasMore = true;
+observer.observe(loader);
+
 // ==== Start Page With Words ======================= //
-fetchWordsByOptions().then((words) => (typingBox.content = words.data));
-repeatBtnEl.addEventListener("click", () => {
-  fetchWordsByOptions().then((words) => (typingBox.content = words.data));
-});
+setWords();
 
 // ==== Choose Words Or Text ======================== //
 chooseOptionEl.forEach((radio) => {
@@ -51,9 +69,11 @@ wordsOptionsEl.addEventListener("change", (evt) => {
     return;
   }
 
+  setWords();
   typingBox.focus();
-  fetchWordsByOptions().then((words) => (typingBox.content = words.data));
 });
+
+repeatBtnEl.addEventListener("click", setWords);
 
 // ==== Handle Text Modal ========================= //
 openTextModalEl.addEventListener("click", onOpenTextModal);
@@ -61,7 +81,10 @@ closeTextModalEl.addEventListener("click", onCloseTextModal);
 
 // ==== Handle Search Text ========================== //
 textSearchBtnEl.addEventListener("click", () => {
-  fetchTextsByParams().then((texts) => changeTextItems(texts.data));
+  hasMore = true;
+  service.page = 1;
+  scrollToTop();
+  loadTextItems();
 });
 
 // ==== Handle Filter Modal ====================== //
@@ -71,7 +94,10 @@ openFilterModalEl.addEventListener("click", () => {
 
 filterModalBtnEl.addEventListener("click", () => {
   filterModalEl.hidden = true;
-  fetchTextsByParams().then((texts) => changeTextItems(texts.data));
+  hasMore = true;
+  service.page = 1;
+  scrollToTop();
+  loadTextItems();
 });
 
 noUiSlider.create(filterSliderEl, {
@@ -86,19 +112,86 @@ noUiSlider.create(filterSliderEl, {
 filterSliderEl.noUiSlider.on("update", onSliderUpdate);
 
 // ==== Fetch Texts =============================== //
-fetchTextsByParams().then((texts) => changeTextItems(texts.data));
+loadTextItems();
+
+// ==== Handle Choice Of Text ===================== //
+textListEl.addEventListener("click", onTextListClick);
 
 // ==== Callback And Helper Functions ============= //
+async function setWords() {
+  const data = await fetchWordsByOptions();
+  typingBox.content = data.data;
+}
+
+async function setText(id) {
+  const data = await service.fetchTextById(id);
+  typingBox.content = formatText(data.data.text);
+}
+
+function onTextListClick(evt) {
+  if (evt.target.nodeName !== "LI") {
+    return;
+  }
+
+  onCloseTextModal();
+  typingBox.focus();
+
+  const textId = evt.target.dataset.id;
+  setText(textId);
+}
+
+function scrollToTop() {
+  scrollContainerEl.scrollTo({
+    top: 0,
+    behavior: "smooth",
+  });
+}
+
+async function loadTextItems() {
+  if (isLoading || !hasMore) return;
+
+  isLoading = true;
+  try {
+    const data = await fetchTextsByParams(30);
+
+    if (data.data.length === 0) {
+      if (Number(data.meta.page) === 1) {
+        textListEl.innerHTML = `<li style="text-align: center;">Not found</li>`;
+      }
+
+      hasMore = false;
+      return;
+    }
+
+    putTextItems(data);
+
+    hasMore = data.meta.has_next;
+  } catch (error) {
+    console.log(error);
+  } finally {
+    isLoading = false;
+  }
+}
+
 async function fetchTextsByParams(per_page = null) {
   const fromWordCount = Math.round(filterSliderEl.noUiSlider.get()[0]);
   const toWordCount = Math.round(filterSliderEl.noUiSlider.get()[1]);
   const query = textSearchEl.value;
+
   return await service.fetchTexts({
     q: query,
     from_w_count: fromWordCount,
     to_w_count: toWordCount,
     per_page: per_page,
   });
+}
+
+function putTextItems(data) {
+  if (Number(data.meta.page) > 1) {
+    addTextItems(data.data);
+  } else {
+    changeTextItems(data.data);
+  }
 }
 
 function changeTextItems(texts) {
@@ -142,9 +235,23 @@ function selectOption(evt) {
   if (evt.currentTarget.value === "words") {
     wordsOptionsEl.hidden = false;
     textOptionsEl.hidden = true;
+
+    repeatBtnEl.hidden = false;
+
+    typingBox.content = service.wordsContent;
   } else {
     wordsOptionsEl.hidden = true;
     textOptionsEl.hidden = false;
+
+    repeatBtnEl.hidden = true;
+
+    if (service.textContent === null) {
+      setText(1);
+      typingBox.focus();
+      return;
+    }
+
+    typingBox.content = formatText(service.textContent);
   }
 
   typingBox.focus();

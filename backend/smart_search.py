@@ -17,7 +17,7 @@ def evaluate_public_text(query: str, text: object) -> float:
     return weight_title + weight_category + weight_tags
 
 
-def smart_search(query: str, texts: list[object], score_cutoff= 60) -> list[object]:
+def smart_search(query: str, texts: list[object], score_cutoff= 40) -> list[object]:
 
     filtred_texts = filter(lambda i: evaluate_public_text(query, i) > score_cutoff, texts)
     sorted_texts = sorted(filtred_texts, key= lambda i: evaluate_public_text(query, i), reverse= True)

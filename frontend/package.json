@@ -16,5 +16,8 @@
   },
   "dependencies": {
     "nouislider": "^15.8.1"
+  },
+  "@parcel/transformer-svg": {
+    "optimizer": false
   }
 }
