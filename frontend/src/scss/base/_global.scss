@@ -1,0 +1,11 @@
+@use "../abstracts/variables" as v;
+
+body {
+  font-family: "Montserrat", sans-serif;
+  color: v.getColor("unactivate");
+  background-color: v.getColor("bg");
+}
+
+[hidden] {
+  display: none !important;
+}

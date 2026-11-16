@@ -1,0 +1,66 @@
+@use "../abstracts/variables" as v;
+
+.logo {
+  font-weight: 700;
+  font-size: 36px;
+  line-height: 100%;
+  color: v.getColor("white");
+}
+
+.container-header {
+  display: flex;
+
+  max-width: 1270px;
+  padding-left: 15px;
+  padding-right: 15px;
+  padding-bottom: 24px;
+  padding-top: 24px;
+  margin: 0 auto;
+}
+
+.header {
+  position: relative;
+  z-index: 105;
+  height: 92px;
+  background-color: v.getColor(primary);
+}
+
+.header-nav {
+  display: flex;
+  align-items: center;
+  height: 100%;
+
+  &__list {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    margin-left: 20px;
+    color: v.getColor(unactivate);
+  }
+
+  &__item--current {
+    color: v.getColor("white");
+  }
+
+  &__icons {
+    width: 36px;
+    height: 36px;
+
+    fill: currentColor;
+  }
+}
+
+.autorization {
+  display: flex;
+  margin-left: auto;
+  align-items: center;
+  gap: 20px;
+
+  &__item {
+    font-weight: 700;
+    font-size: 16px;
+    line-height: 1.25em;
+
+    color: v.getColor("white");
+  }
+}

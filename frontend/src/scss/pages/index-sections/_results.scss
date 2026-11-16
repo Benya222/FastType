@@ -1,0 +1,36 @@
+@use "../../abstracts/variables" as v;
+
+.results {
+  margin-top: 96px;
+
+  &__list {
+    display: flex;
+    gap: 20px;
+  }
+
+  &__item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    color: v.getColor(unactivate);
+  }
+
+  &__name {
+    font-weight: 600;
+    font-size: 16px;
+    line-height: 1.5px;
+    letter-spacing: 0%;
+  }
+
+  &__icon {
+    width: 36px;
+    height: 36px;
+    fill: currentColor;
+  }
+
+  &__icon--keyboard {
+    width: 36px;
+    height: 25px;
+    fill: currentColor;
+  }
+}

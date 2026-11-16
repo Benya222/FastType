@@ -1,0 +1,19 @@
+@mixin regularBtn($textClr, $bgClr) {
+  display: block;
+  padding: 10px 16px;
+  height: 40px;
+
+  font-weight: 600;
+  font-size: 20px;
+  line-height: 100%;
+
+  color: $textClr;
+  background-color: $bgClr;
+
+  border: none;
+  border-radius: 8px;
+
+  transition:
+    background-color 300ms ease,
+    color 300ms ease;
+}

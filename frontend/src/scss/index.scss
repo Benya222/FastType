@@ -1,0 +1,11 @@
+@use "./base/reset";
+@use "./base/global";
+@use "./utilities/utilities";
+
+/* === Page Style */
+@use "./components/header";
+@use "./pages/index-sections/choose-typing";
+@use "./pages/index-sections/typing";
+@use "./pages/index-sections/results";
+@use "./pages/index-sections/backdrop-modal";
+@use "./pages/index-sections/fiter-modal";

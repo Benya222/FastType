@@ -1,0 +1,29 @@
+@use "../abstracts/variables" as v;
+@import "npm:nouislider/dist/nouislider.css";
+
+.noUi-target {
+  background: v.getColor(unactivate);
+}
+
+.noUi-base {
+  background: v.getColor(unactivate);
+}
+
+.noUi-connect {
+  background: v.getColor(primary);
+}
+
+.noUi-handle {
+  height: 28px !important;
+  width: 28px !important;
+  background: v.getColor("white");
+  border: 2px solid v.getColor(seconary);
+  border-radius: 50%;
+  box-shadow: none;
+  cursor: grab;
+}
+
+.noUi-handle::before,
+.noUi-handle::after {
+  display: none;
+}

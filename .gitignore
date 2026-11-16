@@ -4,56 +4,90 @@
 
 __pycache__/
 *.py[cod]
+*$py.class
 
-# Virtual environment
-.venv/
+# Virtual environments
 venv/
+.venv/
 env/
+ENV/
 
-# Environment variables / secrets
+# Python build artifacts
+build/
+dist/
+*.egg-info/
+
+# =========================
+# Flask
+# =========================
+
+instance/
+
+# =========================
+# Environment variables
+# =========================
+
 .env
 .env.*
 !.env.example
 
-# Flask
-instance/
-
-# Testing / coverage
-.pytest_cache/
-.coverage
-htmlcov/
-
-# Python packaging
-*.egg-info/
-dist/
-build/
-
-
 # =========================
-# JavaScript
+# SQLite databases
 # =========================
 
-# Dependencies
+*.db
+*.sqlite
+*.sqlite3
+
+# SQLite temporary files (WAL mode)
+*-journal
+*-wal
+*-shm
+
+# =========================
+# Node.js / npm
+# =========================
+
 node_modules/
-.parcel-cache/
-dist/
-# Logs
 npm-debug.log*
 yarn-debug.log*
 pnpm-debug.log*
 
+# =========================
+# Parcel
+# =========================
+
+.parcel-cache/
+.cache/
 
 # =========================
-# IDE
+# IDE / Editors
 # =========================
 
 .vscode/
 .idea/
-
+*.swp
+*.swo
 
 # =========================
-# OS
+# Operating system
 # =========================
 
 .DS_Store
 Thumbs.db
+Desktop.ini
+
+# =========================
+# Logs
+# =========================
+
+*.log
+
+# =========================
+# Backups
+# =========================
+
+*.bak
+*.backup
+*.old
+

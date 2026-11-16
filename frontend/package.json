@@ -12,9 +12,12 @@
   "license": "ISC",
   "type": "commonjs",
   "devDependencies": {
-    "parcel": "^2.16.4"
+    "@parcel/transformer-sass": "^2.16.4",
+    "parcel": "^2.16.4",
+    "sass": "^1.108.2"
   },
   "dependencies": {
+    "normalize.css": "^8.0.1",
     "nouislider": "^15.8.1"
   },
   "@parcel/transformer-svg": {

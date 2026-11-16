@@ -1,4 +1,5 @@
-const BASE_URL = "http://127.0.0.1:5000/api";
+const API_URL = process.env.API_URL;
+const BASE_URL = `${API_URL}/api`;
 
 export class ApiService {
   constructor() {

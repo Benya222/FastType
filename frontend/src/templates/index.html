@@ -10,14 +10,7 @@
       href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap"
       rel="stylesheet"
     />
-    <link
-      rel="stylesheet"
-      href="https://cdnjs.cloudflare.com/ajax/libs/normalize/8.0.1/normalize.min.css"
-      integrity="sha512-NhSC1YmyruXifcj/KFRWoC561YpHpc5Jtzgvbuzx5VozKpWvQ+4nXhPdFgmx8xqexRcpAglTj9sIBWINXa8x5w=="
-      crossorigin="anonymous"
-      referrerpolicy="no-referrer"
-    />
-    <link rel="stylesheet" href="../css/main.css" />
+    <link rel="stylesheet" href="../scss/index.scss" />
   </head>
   <body>
     <header class="header">
@@ -130,9 +123,15 @@
             </div>
           </div>
           <div id="text-options" class="text-options" hidden>
-            <button type="button" class="choose-text-btn" data-open-modal>
-              choose text
-            </button>
+            <div class="text-options__container">
+              <button type="button" class="choose-text-btn" data-open-modal>
+                choose text
+              </button>
+              <div class="text-options__text-info">
+                <p class="text-options__text-title" id="textTitle"></p>
+                <p><span id="textWords"></span> words</p>
+              </div>
+            </div>
           </div>
         </div>
       </section>
@@ -151,7 +150,7 @@
               autofocus
             ></textarea>
           </div>
-          <button type="button" class="typing__update" id="repeatBtn">
+          <button type="button" class="typing__repeat" id="repeatBtn">
             <svg class="icon-repeat">
               <use href="../images/sprite.svg#icon-repeat"></use>
             </svg>

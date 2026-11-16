@@ -2,7 +2,6 @@ import { ApiService } from "./service";
 import { TypingBox } from "./typing-box";
 import { formatText } from "./utils";
 import noUiSlider from "nouislider";
-import "nouislider/dist/nouislider.css";
 
 const wordsOptionsEl = document.getElementById("words-options");
 const textOptionsEl = document.getElementById("text-options");
@@ -124,8 +123,13 @@ async function setWords() {
 }
 
 async function setText(id) {
+  const titleEl = document.getElementById("textTitle");
+  const wordsEl = document.getElementById("textWords");
+
   const data = await service.fetchTextById(id);
   typingBox.content = formatText(data.data.text);
+  titleEl.textContent = data.data.title;
+  wordsEl.textContent = data.data.word_count;
 }
 
 function onTextListClick(evt) {

@@ -1,0 +1,111 @@
+@use "../../abstracts/variables" as v;
+
+/* typing backdrop */
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  background: v.getColor(secondary);
+  opacity: 0;
+  visibility: hidden;
+  transition:
+    opacity 300ms ease,
+    visibility 300ms ease;
+  z-index: 100;
+  pointer-events: none;
+}
+
+body.focus-mode::before {
+  opacity: 1;
+  visibility: visible;
+}
+
+/* typing */
+
+.typing {
+  display: block;
+  margin-top: 94px;
+
+  &__box {
+    z-index: 101;
+    position: relative;
+    height: 200px;
+    padding: 20px 38px 0;
+    box-sizing: border-box;
+  }
+
+  &__viewport {
+    height: 100%;
+    overflow: hidden;
+    position: relative;
+  }
+
+  &__display {
+    position: relative;
+    transform: translateY(0);
+    transition: transform 120ms ease-out;
+
+    font-weight: 500;
+    font-size: 40px;
+    line-height: 1.5;
+    letter-spacing: 0.05em;
+    white-space: pre-wrap;
+    overflow-wrap: break-word;
+
+    color: v.getColor(unactivate);
+    user-select: none;
+  }
+
+  &__input {
+    position: absolute;
+    top: 15px;
+    left: 15px;
+    width: calc(100% - 30px);
+    height: calc(100% - 30px);
+    box-sizing: border-box;
+    z-index: 2;
+
+    background: transparent;
+    color: transparent;
+    caret-color: transparent;
+    border: none;
+    outline: none;
+    resize: none;
+    overflow: hidden;
+    scrollbar-width: none;
+  }
+
+  &__input::-webkit-scrollbar {
+    display: none;
+  }
+
+  &__repeat {
+    display: block;
+    padding: 0;
+    margin-top: 40px;
+    margin-left: auto;
+    margin-right: auto;
+    border: none;
+    background-color: v.getColor(bg);
+    color: v.getColor(unactivate);
+  }
+}
+
+.icon-repeat {
+  width: 30px;
+  height: 30px;
+  fill: currentColor;
+}
+
+.char-correct {
+  color: v.getColor(primary);
+}
+
+.char-incorrect {
+  color: v.getColor(danger);
+}
+
+.char-current {
+  color: inherit;
+  border-bottom: 2px solid v.getColor(primaryTranp);
+}

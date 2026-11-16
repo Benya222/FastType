@@ -1,0 +1,78 @@
+@use "../../abstracts/variables" as v;
+@use "../../components/range-slider";
+
+.filter-modal {
+  position: absolute;
+  display: block;
+  top: 40px;
+  right: 0;
+  width: 262px;
+
+  padding: 16px;
+  background-color: v.getColor(bg);
+  border-radius: 12px;
+
+  &__title {
+    margin-top: 0;
+    margin-bottom: 0;
+    font-weight: 400;
+    font-size: 16px;
+    line-height: 1.25;
+    letter-spacing: 0%;
+
+    color: v.getColor(primary);
+  }
+
+  &__count-container {
+    display: flex;
+    margin-top: 6px;
+    margin-bottom: 8px;
+    justify-content: space-between;
+  }
+
+  &__count {
+    display: block;
+    width: 57px;
+    height: 26px;
+    padding: 4px;
+
+    text-align: center;
+
+    font-weight: 400;
+    font-size: 14px;
+    line-height: 1.14;
+    border: 1px solid v.getColor(primary);
+    border-radius: 16px;
+    color: v.getColor(primaryTranp);
+  }
+}
+
+.filter-modal__btn {
+  display: block;
+  width: 100%;
+  height: 38px;
+  padding: 8px;
+  margin-top: 8px;
+  background-color: v.getColor(bg);
+
+  text-align: center;
+  color: v.getColor(primary);
+  border: 1px solid v.getColor(primary);
+  border-radius: 8px;
+
+  font-weight: 600;
+  font-size: 20px;
+  line-height: 1;
+  letter-spacing: 0%;
+
+  transition:
+    background-color 300ms ease,
+    color 300ms ease;
+
+  &:hover,
+  &:focus {
+    color: v.getColor(bg);
+    background-color: v.getColor(primary);
+    border: none;
+  }
+}

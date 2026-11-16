@@ -1,8 +1,32 @@
+import os
+from pathlib import Path
 from peewee import *
 from datetime import datetime
 
 
-db = SqliteDatabase('fasttype.db')
+BASE_DIR = Path(__file__).resolve().parent
+
+DATABASE_PATH = os.getenv(
+    "DATABASE_PATH",
+    str(BASE_DIR / "fasttype.db")
+)
+
+
+db_path = Path(DATABASE_PATH)
+
+if not db_path.is_absolute():
+    db_path = BASE_DIR / db_path
+
+db_path.parent.mkdir(parents=True, exist_ok=True)
+
+
+db = SqliteDatabase(
+    str(db_path),
+    pragmas={
+        "foreign_keys": 1,
+        "journal_mode": "wal",
+    }
+)
 
 
 class BaseModel(Model):
@@ -57,5 +81,5 @@ class PublicText(BaseModel):
     source_id = CharField(unique= True, null= True)
 
 def init_db():
-    db.connect()
-    db.create_tables([PublicText, Word])
+    with db:
+        db.create_tables([PublicText, Word], safe=True)

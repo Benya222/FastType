@@ -1,0 +1,18 @@
+@use "sass:map";
+
+$colors: (
+  "primary": #446493,
+  "primaryTranp": #41669399,
+  "secondary": #d9e8ec,
+  "bgSecondary": #b5c9d7,
+  "unactivate": #7e9ab7,
+  "unactivateTranp": rgba(126, 154, 183, 0.4),
+  "white": #ffffff,
+  "bg": #e6faf8,
+  "bgTranp": #e6faf899,
+  "danger": #ed6565,
+);
+
+@function getColor($key) {
+  @return map.get($colors, $key);
+}

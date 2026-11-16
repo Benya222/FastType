@@ -1,4 +1,4 @@
-from models import init_db, PublicText, Word
+from models import PublicText, Word
 from random import sample
 
 ''' READ '''

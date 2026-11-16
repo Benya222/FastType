@@ -1,0 +1,103 @@
+@use "../../abstracts/variables" as v;
+@use "../../abstracts/mixins" as m;
+
+.choose-typing {
+  margin-top: 127px;
+}
+
+.choose-type {
+  display: flex;
+  gap: 20px;
+}
+
+.choose-type__label {
+  @include m.regularBtn(v.getColor(primaryTranp), v.getColor(secondary));
+
+  &:hover,
+  &:focus {
+    background-color: v.getColor(primary) !important;
+    color: v.getColor(secondary) !important;
+  }
+}
+
+.choose-type input:checked + label {
+  color: v.getColor(primary);
+}
+
+/* words-options */
+.words-options {
+  display: flex;
+  gap: 60px;
+  margin-left: auto;
+
+  &__container {
+    display: flex;
+    gap: 20px;
+    align-items: center;
+  }
+
+  &__label {
+    display: block;
+    padding-left: 40px;
+    padding-top: 4px;
+    padding-bottom: 4px;
+
+    font-weight: 400;
+    font-size: 16px;
+    line-height: 1.25;
+
+    background-image: url("../images/base-radio.svg");
+    background-position: left;
+    background-repeat: no-repeat;
+  }
+}
+
+.words-options input:checked + label {
+  font-weight: 600;
+  color: v.getColor(primary);
+
+  background-image: url("../images/accent-radio.svg");
+  background-position: left;
+  background-repeat: no-repeat;
+}
+
+/* text-options */
+.text-options {
+  display: block;
+  margin-left: 222px;
+  width: 100%;
+
+  &__container {
+    display: flex;
+    align-items: center;
+  }
+
+  &__text-info {
+    display: flex;
+    gap: 20px;
+    margin-left: auto;
+
+    font-weight: 600;
+    font-size: 16;
+    line-height: 1.25;
+    letter-spacing: 0%;
+    color: v.getColor(primary);
+  }
+
+  &__text-title {
+    max-width: 265px;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    overflow: hidden;
+  }
+}
+
+.choose-text-btn {
+  @include m.regularBtn(v.getColor(primary), v.getColor(secondary));
+
+  &:hover,
+  &:focus {
+    background-color: v.getColor(primary);
+    color: v.getColor(secondary);
+  }
+}

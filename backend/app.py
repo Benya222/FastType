@@ -1,6 +1,11 @@
+import os
+from dotenv import load_dotenv
+
+load_dotenv()
+
 from flask import Flask, request
 from flask_cors import CORS
-from models import init_db
+from models import init_db, db
 from action_db import get_public_text_by_id
 from utils import success_response, error_response
 from service import (ArgsValueError,
@@ -14,7 +19,15 @@ from service import (ArgsValueError,
 
 
 app = Flask(__name__)
-CORS(app)
+
+app.secret_key = os.getenv("SECRET_KEY")
+if not app.secret_key:
+    raise RuntimeError("SECRET_KEY is not configured")
+
+frontend_origin = os.getenv("FRONTEND_ORIGIN", "http://localhost:1234")
+
+CORS(app, origins= [frontend_origin])
+
 init_db()
 
 @app.get("/api/words")
@@ -78,4 +91,15 @@ def handle_args_error(error):
     return error_response(message= str(error), code=400)
 
 
-app.run(debug=True)
+@app.before_request
+def before_request():
+    if db.is_closed():
+        db.connect()
+
+@app.teardown_request
+def teardown_request(exeption=None):
+    if not db.is_closed():
+        db.close()        
+
+
+app.run(debug=True, port=5000)
